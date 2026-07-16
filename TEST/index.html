@@ -7,7 +7,7 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- Bootstrap Datepicker -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker3.min.css" rel="stylesheet">
@@ -19,8 +19,10 @@
   :root{
     --paper: #F7F1E3;
     --paper-dark: #EFE6CF;
+    --card: #FCF8EE;
     --ink: #1F3A2C;
     --ink-soft: #3E5648;
+    --ink-faint: #74846F;
     --rule: #C9A961;
     --accent: #C1592B;
     --accent-dark: #A2441E;
@@ -30,6 +32,7 @@
     --low-bg: #F5E3B3;
     --danger: #A2321E;
     --danger-bg: #F3CFC7;
+    --shadow: rgba(31, 58, 44, 0.16);
   }
 
   *{ box-sizing:border-box; }
@@ -47,8 +50,11 @@
   h1, h2, .brand{ font-family: 'Fraunces', serif; }
   .mono{ font-family: 'IBM Plex Mono', monospace; }
 
+  .i-ico{ vertical-align: -3px; margin-right: 5px; flex-shrink: 0; }
+  .pill .i-ico{ vertical-align: -2px; margin-right: 3px; width: 12px; height: 12px; }
+
   .page{
-    max-width: 860px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 2.5rem 1.1rem 0;
   }
@@ -64,13 +70,25 @@
     gap: 1rem;
     flex-wrap: wrap;
   }
-  .brand-block{ display:flex; flex-direction:column; gap:0.15rem; }
+  .brand-block{ display:flex; align-items:center; gap:0.85rem; }
+  .brand-mark{
+    width: 42px; height: 42px;
+    flex-shrink: 0;
+    border: 1.5px solid var(--ink);
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    background: #fff;
+    color: var(--accent-dark);
+    box-shadow: 0 4px 10px -4px var(--shadow);
+  }
+  .brand-text{ display:flex; flex-direction:column; gap:0.15rem; }
   .brand{
     font-size: clamp(1.4rem, 4.5vw, 1.85rem);
     font-weight: 600;
     letter-spacing: 0.01em;
     margin:0;
     color: var(--ink);
+    line-height: 1.15;
   }
   .brand small{
     display:block;
@@ -117,13 +135,10 @@
     font-family:'IBM Plex Mono'; font-size: 0.68rem; color: var(--ink-soft);
     letter-spacing: 0.03em; white-space: nowrap;
   }
-  .logout-btn{
-    font-size: 0.72rem;
-    padding: 0.5rem 1rem;
-  }
+  .logout-btn{ font-size: 0.72rem; padding: 0.5rem 1rem; }
 
   .gear-btn{
-    background: none;
+    background: #fff;
     border: 1.5px solid var(--ink);
     border-radius: 2px;
     width: 36px; height: 36px;
@@ -153,12 +168,13 @@
 
   /* --- Notebook block --- */
   .leaf{
-    background: rgba(255,255,255,0.35);
+    background: var(--card);
     border: 1px solid var(--rule);
-    border-radius: 2px;
+    border-radius: 3px;
     padding: 1.75rem 1.5rem;
     margin-bottom: 2rem;
     position: relative;
+    box-shadow: 0 12px 28px -14px var(--shadow), 0 1px 0 rgba(255,255,255,0.6) inset;
   }
   .leaf::before{
     content: attr(data-tab);
@@ -173,6 +189,14 @@
     color: var(--ink-soft);
   }
 
+  .field-section-title{
+    font-family:'IBM Plex Mono'; font-size: 0.68rem; letter-spacing:0.1em;
+    text-transform:uppercase; color: var(--accent-dark); margin: 1.3rem 0 0.75rem;
+    border-bottom: 1px dashed var(--rule); padding-bottom: 0.4rem;
+    display:flex; align-items:center;
+  }
+  .field-section-title:first-of-type{ margin-top: 0; }
+
   label.form-label{
     font-family:'IBM Plex Mono';
     font-size: 0.72rem;
@@ -180,6 +204,8 @@
     text-transform: uppercase;
     color: var(--ink-soft);
     margin-bottom: 0.35rem;
+    display:flex;
+    align-items:center;
   }
 
   .form-control, .form-select{
@@ -254,7 +280,8 @@
   .refresh-link:hover{ color: var(--accent-dark); border-color: var(--accent-dark); }
 
   .pill{
-    display:inline-block;
+    display:inline-flex;
+    align-items:center;
     padding: 0.18rem 0.55rem;
     border-radius: 999px;
     font-family: 'IBM Plex Mono';
@@ -265,6 +292,7 @@
   .pill-fine{ background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
   .pill-low{ background: var(--low-bg); color: var(--low); border-color: var(--low); }
   .pill-danger{ background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
+  .pill-neutral{ background: var(--paper-dark); color: var(--ink-soft); border-color: var(--rule); }
   .pill-none{ color: var(--ink-soft); border: none; padding-left: 0; }
 
   /* --- Bootstrap Table theming to match the notebook look --- */
@@ -280,13 +308,16 @@
   .fixed-table-toolbar .search input:focus{ border-bottom: 2px solid var(--accent); }
   .fixed-table-container{
     border: 1px solid var(--rule);
-    background: rgba(255,255,255,0.35);
+    background: var(--card);
+    box-shadow: 0 12px 28px -14px var(--shadow);
+    border-radius: 3px;
   }
-  .fixed-table-container table.table{ margin-bottom:0; }
+  .fixed-table-body{ overflow-x: auto; }
+  .fixed-table-container table.table{ margin-bottom:0; min-width: 1500px; }
   .table thead th{
     font-family:'IBM Plex Mono' !important;
-    font-size: 0.66rem;
-    letter-spacing: 0.06em;
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ink-soft) !important;
     background: var(--paper-dark) !important;
@@ -295,12 +326,15 @@
     white-space: nowrap;
     vertical-align: middle;
   }
+  .table th .th-inner{ display:flex; align-items:center; }
   .table td{
     border-bottom: 1px dashed var(--rule) !important;
     font-size: 0.86rem;
     vertical-align: middle;
     background: transparent !important;
+    max-width: 220px;
   }
+  .table td.text-cell{ white-space: nowrap; overflow:hidden; text-overflow: ellipsis; max-width: 180px; }
   .table td.date-cell{ font-family:'IBM Plex Mono'; font-size:0.78rem; white-space:nowrap; }
   .fixed-table-pagination .page-link{
     color: var(--ink);
@@ -341,10 +375,7 @@
   .datepicker .datepicker-switch, .datepicker .prev, .datepicker .next{ font-family:'IBM Plex Mono'; }
 
   /* --- Advanced panel --- */
-  .adv-panel{
-    display:none;
-    margin-bottom: 2rem;
-  }
+  .adv-panel{ display:none; margin-bottom: 2rem; }
   .adv-panel.open{ display:block; }
   .adv-section-title{
     font-family:'IBM Plex Mono'; font-size: 0.7rem; letter-spacing:0.1em;
@@ -357,42 +388,55 @@
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
   }
+  .adv-metric-card{
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.85rem 0.9rem 0.55rem;
+  }
   .adv-metric-label{
-    font-family:'IBM Plex Mono'; font-size: 0.72rem; letter-spacing:0.08em;
-    text-transform:uppercase; color: var(--ink); margin-bottom: 0.5rem; display:block;
+    font-family:'IBM Plex Mono'; font-size: 0.7rem; letter-spacing:0.06em;
+    text-transform:uppercase; color: var(--ink); margin-bottom: 0.5rem; display:flex; align-items:center;
   }
   .adv-field{ margin-bottom: 0.6rem; }
   .adv-field label{
-    font-size: 0.68rem; color: var(--ink-soft); display:block; margin-bottom: 0.2rem;
+    font-size: 0.66rem; color: var(--ink-soft); display:block; margin-bottom: 0.2rem;
   }
   .adv-row{ display:flex; gap:1.25rem; flex-wrap:wrap; align-items:flex-end; }
   .adv-row .adv-field{ min-width: 160px; flex: 1; }
   .adv-note{
     font-size: 0.78rem; color: var(--ink-soft); margin-top: 1rem; line-height: 1.5;
   }
-  @media (max-width: 620px){
-    .adv-grid{ grid-template-columns: 1fr; }
-  }
-
-  @media (max-width: 520px){
-    .page{ padding-top: 2rem; }
-  }
-
+  @media (max-width: 620px){ .adv-grid{ grid-template-columns: 1fr; } }
+  @media (max-width: 520px){ .page{ padding-top: 2rem; } }
   @media (prefers-reduced-motion: reduce){ .btn-ink{ transition:none; } }
 
   /* --- Lock / login screens --- */
   .lock-screen{
     position: fixed; inset: 0; background: var(--paper);
+    background-image: linear-gradient(var(--paper-dark) 1px, transparent 1px);
+    background-size: 100% 2.1rem;
     display: flex; align-items: center; justify-content: center;
     padding: 1.25rem; z-index: 10;
   }
   .lock-card{
     max-width: 380px; width: 100%;
-    background: rgba(255,255,255,0.4);
+    background: var(--card);
     border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 2rem 1.75rem;
+    border-radius: 3px;
+    padding: 2.1rem 1.75rem;
     text-align: center;
+    box-shadow: 0 20px 44px -18px var(--shadow);
+  }
+  .lock-icon-circle{
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+    background: #fff;
+    display:flex; align-items:center; justify-content:center;
+    margin: 0 auto 1rem;
+    color: var(--accent-dark);
+    box-shadow: 0 6px 14px -6px var(--shadow);
   }
   .lock-eyebrow{
     font-family: 'IBM Plex Mono'; font-size: 0.7rem; letter-spacing: 0.14em;
@@ -419,6 +463,7 @@
 <!-- Screen 1: login (username + password from the Users sheet) -->
 <div id="loginScreen" class="lock-screen">
   <div class="lock-card">
+    <div class="lock-icon-circle" id="loginIconHolder"></div>
     <p class="lock-eyebrow">Daybook</p>
     <h1 class="lock-title">Sign in</h1>
     <p class="lock-copy">Enter the username and password set up for this ledger.</p>
@@ -434,6 +479,7 @@
 <!-- Screen 2: ledger key (shown only after a successful login) -->
 <div id="lockScreen" class="lock-screen" hidden>
   <div class="lock-card">
+    <div class="lock-icon-circle" id="lockIconHolder"></div>
     <p class="lock-eyebrow">Daybook</p>
     <h1 class="lock-title">Enter the ledger key</h1>
     <p class="lock-copy">This page is shared between two people only. Ask whoever set it up for the access code.</p>
@@ -449,8 +495,11 @@
 
   <header class="masthead">
     <div class="brand-block">
-      <h1 class="brand">Daybook<small>a small ledger of small habits</small></h1>
-      <span class="today-stamp" id="todayStamp"></span>
+      <span class="brand-mark" id="brandMarkHolder"></span>
+      <div class="brand-text">
+        <h1 class="brand">Daybook<small>a small ledger of small habits</small></h1>
+        <span class="today-stamp" id="todayStamp"></span>
+      </div>
     </div>
     <div class="header-controls">
       <nav class="tab-nav">
@@ -471,41 +520,7 @@
   <section class="leaf adv-panel" id="advPanel" data-tab="Advanced options">
 
     <p class="adv-section-title">Display thresholds</p>
-    <div class="adv-grid">
-      <div>
-        <span class="adv-metric-label">Water (L)</span>
-        <div class="adv-field">
-          <label for="advWaterFine">Fine at or above</label>
-          <input type="number" step="0.1" class="form-control" id="advWaterFine">
-        </div>
-        <div class="adv-field">
-          <label for="advWaterDanger">Danger below</label>
-          <input type="number" step="0.1" class="form-control" id="advWaterDanger">
-        </div>
-      </div>
-      <div>
-        <span class="adv-metric-label">Workout (min)</span>
-        <div class="adv-field">
-          <label for="advWorkoutFine">Fine at or above</label>
-          <input type="number" class="form-control" id="advWorkoutFine">
-        </div>
-        <div class="adv-field">
-          <label for="advWorkoutDanger">Danger below</label>
-          <input type="number" class="form-control" id="advWorkoutDanger">
-        </div>
-      </div>
-      <div>
-        <span class="adv-metric-label">Reading (min)</span>
-        <div class="adv-field">
-          <label for="advReadingFine">Fine at or above</label>
-          <input type="number" class="form-control" id="advReadingFine">
-        </div>
-        <div class="adv-field">
-          <label for="advReadingDanger">Danger below</label>
-          <input type="number" class="form-control" id="advReadingDanger">
-        </div>
-      </div>
-    </div>
+    <div id="advThresholdsGrid"></div>
     <div class="d-flex gap-2 mt-2 flex-wrap">
       <button type="button" class="btn btn-ink" id="advApply">Apply thresholds</button>
       <button type="button" class="btn btn-outline-ink" id="advReset">Reset to defaults</button>
@@ -537,9 +552,12 @@
     </div>
 
     <p class="adv-note">
-      Thresholds and view options only change how this page displays entries. The colours already
-      written into the Google Sheet itself are set at save time using the thresholds inside
+      Thresholds and view options only change how this page displays entries. The colours
+      already written into the Google Sheet itself are set at save time using the thresholds inside
       <code>Code.gs</code> — change those there and redeploy if you want the sheet colours to match.
+      If your Apps Script backend doesn't yet have columns for the new fields below, add them to
+      the sheet header and to the <code>save</code>/<code>list</code> actions in <code>Code.gs</code>
+      so they round-trip correctly.
     </p>
   </section>
 
@@ -552,44 +570,15 @@
 
     <section class="leaf" data-tab="Today's entry">
       <form id="logForm" novalidate>
-        <div class="row g-3">
+        <div class="row g-3 mb-1">
           <div class="col-12 col-sm-6">
             <label class="form-label" for="entryDate">Date</label>
             <input type="text" class="form-control" id="entryDate" placeholder="yyyy-mm-dd" autocomplete="off" required>
           </div>
-          <div class="col-12 col-sm-6">
-            <label class="form-label" for="waterInput">Water intake</label>
-            <div class="d-flex align-items-center gap-2">
-              <input type="number" step="0.1" min="0" class="form-control" id="waterInput" placeholder="0.0">
-              <span class="input-suffix">litres</span>
-            </div>
-          </div>
-
-          <div class="col-12 col-sm-6">
-            <label class="form-label" for="workoutInput">Workout</label>
-            <div class="d-flex align-items-center gap-2">
-              <input type="number" min="0" class="form-control" id="workoutInput" placeholder="0">
-              <span class="input-suffix">minutes</span>
-            </div>
-          </div>
-          <div class="col-12 col-sm-6">
-            <label class="form-label" for="readingInput">Reading</label>
-            <div class="d-flex align-items-center gap-2">
-              <input type="number" min="0" class="form-control" id="readingInput" placeholder="0">
-              <span class="input-suffix">minutes</span>
-            </div>
-          </div>
-
-          <div class="col-12">
-            <label class="form-label" for="bookInput">Book / topic (optional)</label>
-            <input type="text" class="form-control" id="bookInput" placeholder="e.g. Atomic Habits">
-          </div>
-
-          <div class="col-12">
-            <label class="form-label" for="notesInput">Notes (optional)</label>
-            <textarea class="form-control" id="notesInput" rows="2" placeholder="anything else worth remembering about today"></textarea>
-          </div>
         </div>
+
+        <div id="metricFieldsRow"></div>
+        <div id="textFieldsCol" class="mt-1"></div>
 
         <div class="d-flex align-items-center gap-3 mt-3 flex-wrap">
           <button type="submit" class="btn btn-ink" id="submitBtn">Save entry</button>
@@ -606,26 +595,7 @@
         <h2>Ledger</h2>
         <a class="refresh-link" id="refreshLink">refresh</a>
       </div>
-      <table id="ledgerTable"
-             data-toggle="table"
-             data-search="true"
-             data-pagination="true"
-             data-page-size="10"
-             data-page-list="[5, 10, 20, 50, All]"
-             data-sort-name="date"
-             data-sort-order="desc"
-             data-no-data-text="no entries yet — save your first one on the Daybook tab">
-        <thead>
-          <tr>
-            <th data-field="date" data-sortable="true" data-formatter="dateFormatter">Date</th>
-            <th data-field="water" data-sortable="true" data-formatter="waterFormatter">Water</th>
-            <th data-field="workout" data-sortable="true" data-formatter="workoutFormatter">Workout</th>
-            <th data-field="reading" data-sortable="true" data-formatter="readingFormatter">Reading</th>
-            <th data-field="book" data-sortable="true" data-formatter="textFormatter">Book</th>
-            <th data-field="notes" data-formatter="textFormatter">Notes</th>
-          </tr>
-        </thead>
-      </table>
+      <table id="ledgerTable"></table>
     </section>
   </div>
 
@@ -643,33 +613,78 @@
 
 <script>
   // ======= CONFIGURE THIS =======
-  // Paste the URL you get after deploying the companion Apps Script as a Web App.
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXpSiVJrsNjkd3FStuegrq7Y-WHP90brHUcQgPuW6xJMxQZaNbTOmcKjU2MyTxycoe/exec";
   // ================================
 
-  // Neither the login password nor the ledger key is stored in this file.
-  // Both are entered at runtime, so this file has nothing secret to leak
-  // even if it sits in a public GitHub repo.
   let TOKEN = null;
   let CURRENT_USER = null;
 
-  // Default display thresholds — matches the defaults baked into Code.gs.
-  // Editable live via the Advanced panel (page display only).
-  const DEFAULT_THRESHOLDS = {
-    water:   { fine: 2,  danger: 1  },
-    workout: { fine: 20, danger: 5  },
-    reading: { fine: 30, danger: 10 }
+  /* ---------------- Icon set (inline, no external icon font) ---------------- */
+  const ICON_PATHS = {
+    droplet:   '<path d="M12 3C12 3 6 10.2 6 14.5C6 17.5 8.7 20 12 20C15.3 20 18 17.5 18 14.5C18 10.2 12 3 12 3Z"/>',
+    dumbbell:  '<circle cx="4.5" cy="12" r="2"/><circle cx="19.5" cy="12" r="2"/><line x1="6.5" y1="12" x2="17.5" y2="12"/><line x1="9" y1="8.5" x2="9" y2="15.5"/><line x1="15" y1="8.5" x2="15" y2="15.5"/>',
+    book:      '<path d="M4 5.2C4 4.5 4.6 4 5.3 4H11V19.5H5.3C4.6 19.5 4 19 4 18.3V5.2Z"/><path d="M20 5.2C20 4.5 19.4 4 18.7 4H13V19.5H18.7C19.4 19.5 20 19 20 18.3V5.2Z"/>',
+    moon:      '<path d="M20 14.2A8.3 8.3 0 1 1 9.8 4A6.4 6.4 0 0 0 20 14.2Z"/>',
+    heart:     '<path d="M12 20C12 20 4.5 15 4.5 9.8C4.5 7 6.8 4.7 9.6 4.7C11 4.7 12 5.6 12 5.6C12 5.6 13 4.7 14.4 4.7C17.2 4.7 19.5 7 19.5 9.8C19.5 15 12 20 12 20Z"/>',
+    monitor:   '<rect x="3" y="4.5" width="18" height="12.5" rx="1.4"/><line x1="8" y1="20.5" x2="16" y2="20.5"/><line x1="12" y1="17" x2="12" y2="20.5"/>',
+    wallet:    '<rect x="3" y="6.5" width="18" height="12" rx="1.8"/><path d="M3 10.5H21"/><circle cx="17" cy="14.2" r="1.1" fill="currentColor" stroke="none"/>',
+    smile:     '<circle cx="12" cy="12" r="8.5"/><circle cx="9" cy="10" r="0.9" fill="currentColor" stroke="none"/><circle cx="15" cy="10" r="0.9" fill="currentColor" stroke="none"/><path d="M8.2 14C8.2 14 9.7 16.7 12 16.7C14.3 16.7 15.8 14 15.8 14"/>',
+    zap:       '<path d="M13 2.5L5 14H11.2L10.5 21.5L19 10H12.8L13 2.5Z"/>',
+    footprints:'<ellipse cx="8" cy="16.5" rx="2" ry="3" transform="rotate(-18 8 16.5)"/><ellipse cx="16" cy="8.5" rx="2" ry="3" transform="rotate(18 16 8.5)"/><circle cx="10.3" cy="13.3" r="0.6" fill="currentColor" stroke="none"/><circle cx="13.6" cy="11.6" r="0.6" fill="currentColor" stroke="none"/>',
+    sparkles:  '<path d="M12 3L13.6 9L19.5 10.5L13.6 12L12 18L10.4 12L4.5 10.5L10.4 9L12 3Z"/><path d="M19 15.5L19.6 17.7L21.8 18.3L19.6 18.9L19 21L18.4 18.9L16.2 18.3L18.4 17.7L19 15.5Z"/>',
+    checklist: '<path d="M4 7H10"/><path d="M4 17H10"/><path d="M13 7.3L14.4 8.7L18 5.1"/><path d="M13 17.3L14.4 18.7L18 15.1"/>',
+    star:      '<path d="M12 3L14.6 9.3L21.3 9.9L16.2 14.2L17.8 20.7L12 17.2L6.2 20.7L7.8 14.2L2.7 9.9L9.4 9.3L12 3Z"/>',
+    notebook:  '<rect x="4.5" y="3.5" width="15" height="17" rx="1.4"/><line x1="8" y1="3.5" x2="8" y2="20.5"/><line x1="11.5" y1="7.5" x2="17" y2="7.5"/><line x1="11.5" y1="11" x2="17" y2="11"/>',
+    lock:      '<rect x="5" y="11" width="14" height="9" rx="1.6"/><path d="M8 11V7.3A4 4 0 0 1 16 7.3V11"/>',
+    user:      '<circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20C4.8 15.8 7.9 13.6 12 13.6C16.1 13.6 19.2 15.8 19.2 20"/>',
+    calendar:  '<rect x="3.5" y="5" width="17" height="15" rx="1.5"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="8" y1="3" x2="8" y2="6.5"/><line x1="16" y1="3" x2="16" y2="6.5"/>'
   };
+  function svgIcon(name, size){
+    size = size || 16;
+    const inner = ICON_PATHS[name] || '';
+    return '<svg class="i-ico" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
+  }
+
+  /* ---------------- Field configuration ---------------- */
+  // direction: 'higher' = bigger number is better, 'lower' = smaller number is better
+  const METRICS = [
+    { key:'water',        label:'Water intake',            unit:' L',   icon:'droplet',    direction:'higher', fine:2,    danger:1,    step:0.1, group:'body' },
+    { key:'sleep',         label:'Sleeping mins',           unit:' min', icon:'moon',       direction:'higher', fine:420,  danger:300,  step:1,   group:'body' },
+    { key:'skincare',      label:'Skin care',                unit:'',     icon:'sparkles',   formType:'boolean', group:'body' },
+    { key:'steps',         label:'Fitness — Steps',          unit:'',     icon:'footprints', direction:'higher', fine:8000, danger:4000, step:1,   group:'body' },
+    { key:'mood',          label:'Mood rating',              unit:'/5',   icon:'smile',      direction:'higher', fine:4,    danger:2,    step:1, min:1, max:5, group:'mind' },
+    { key:'energy',        label:'Energy level',             unit:'/5',   icon:'zap',        direction:'higher', fine:4,    danger:2,    step:1, min:1, max:5, group:'mind' },
+    { key:'reading',       label:'Reading',                  unit:' min', icon:'book',       direction:'higher', fine:30,   danger:10,   step:1,   group:'mind' },
+    { key:'timeWithHim',   label:'Time with Him',            unit:' min', icon:'heart',      direction:'higher', fine:60,   danger:15,   step:1,   group:'connection' },
+    { key:'workout',       label:'Workout',                  unit:' min', icon:'dumbbell',   direction:'higher', fine:20,   danger:5,    step:1,   group:'connection' },
+    { key:'screenTime',    label:'Digital — Screen time',    unit:' min', icon:'monitor',    direction:'lower',  fine:120,  danger:240,  step:1,   group:'digital' },
+    { key:'moneySpent',    label:'Finance — Money spent',    unit:' ₹',  icon:'wallet',     direction:'lower',  fine:300,  danger:1000, step:1,   group:'digital' }
+  ];
+  const TEXT_FIELDS = [
+    { key:'book',            label:'Book / topic',          icon:'book',      placeholder:'e.g. Atomic Habits', formType:'text' },
+    { key:'favoriteMoment',  label:'A favorite moment',     icon:'star',      placeholder:'the best bit of today', formType:'text' },
+    { key:'thingsTomorrow',  label:'Things to do tomorrow', icon:'checklist', placeholder:'one line per task', formType:'textarea' },
+    { key:'notes',           label:'Notes',                 icon:'notebook',  placeholder:'anything else worth remembering about today', formType:'textarea' }
+  ];
+  const GROUP_META = {
+    body:       { label:'Body & Rest',      icon:'droplet' },
+    mind:       { label:'Mind',             icon:'smile' },
+    connection: { label:'Connection & Day', icon:'heart' },
+    digital:    { label:'Digital & Finance',icon:'monitor' }
+  };
+  const GROUP_ORDER = ['body','mind','connection','digital'];
+
+  const DEFAULT_THRESHOLDS = {};
+  METRICS.forEach(function(m){
+    if(m.formType !== 'boolean'){
+      DEFAULT_THRESHOLDS[m.key] = { fine: m.fine, danger: m.danger, direction: m.direction };
+    }
+  });
   let thresholds = JSON.parse(JSON.stringify(DEFAULT_THRESHOLDS));
   let lastEntries = [];
   let streakWindow = 7;
 
   const entryDate = document.getElementById('entryDate');
-  const waterInput = document.getElementById('waterInput');
-  const workoutInput = document.getElementById('workoutInput');
-  const readingInput = document.getElementById('readingInput');
-  const bookInput = document.getElementById('bookInput');
-  const notesInput = document.getElementById('notesInput');
   const statusLine = document.getElementById('statusLine');
   const submitBtn = document.getElementById('submitBtn');
   const todayStamp = document.getElementById('todayStamp');
@@ -677,6 +692,10 @@
   const streakLabel = document.getElementById('streakLabel');
   const refreshLink = document.getElementById('refreshLink');
   const userChip = document.getElementById('userChip');
+
+  document.getElementById('brandMarkHolder').innerHTML = svgIcon('notebook', 20);
+  document.getElementById('loginIconHolder').innerHTML = svgIcon('user', 24);
+  document.getElementById('lockIconHolder').innerHTML = svgIcon('lock', 24);
 
   function todayISO(){
     const d = new Date();
@@ -705,7 +724,7 @@
   async function apiPost(body){
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(body)
     });
     if(!res.ok) throw new Error('Request failed: ' + res.status);
@@ -752,39 +771,183 @@
     }
   }
 
-  function statusFor(value, cfg){
-    if(value === '' || value === null || value === undefined) return null;
-    const n = Number(value);
-    if(Number.isNaN(n)) return null;
-    if(n >= cfg.fine) return 'fine';
-    if(n >= cfg.danger) return 'low';
-    return 'danger';
-  }
-
-  function pill(value, unit, cfg){
-    if(value === '' || value === null || value === undefined){
-      return '<span class="pill pill-none">—</span>';
-    }
-    const status = statusFor(value, cfg);
-    const cls = status === 'fine' ? 'pill-fine' : status === 'low' ? 'pill-low' : 'pill-danger';
-    return `<span class="pill ${cls}">${escapeHtml(String(value))}${unit}</span>`;
-  }
-
   function escapeHtml(str){
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
   }
 
-  // --- Bootstrap Table cell formatters (must be in global scope) ---
+  function statusFor(value, cfg){
+    if(value === '' || value === null || value === undefined || !cfg) return null;
+    const n = Number(value);
+    if(Number.isNaN(n)) return null;
+    if(cfg.direction === 'lower'){
+      if(n <= cfg.fine) return 'fine';
+      if(n <= cfg.danger) return 'low';
+      return 'danger';
+    }
+    if(n >= cfg.fine) return 'fine';
+    if(n >= cfg.danger) return 'low';
+    return 'danger';
+  }
+
+  function metricPill(value, m){
+    if(value === '' || value === null || value === undefined){
+      return '<span class="pill pill-none">—</span>';
+    }
+    const cfg = thresholds[m.key];
+    const status = statusFor(value, cfg);
+    const cls = status === 'fine' ? 'pill-fine' : status === 'low' ? 'pill-low' : status === 'danger' ? 'pill-danger' : 'pill-neutral';
+    return '<span class="pill ' + cls + '">' + svgIcon(m.icon, 12) + escapeHtml(String(value)) + (m.unit || '') + '</span>';
+  }
+
+  function booleanPill(value){
+    if(value === '' || value === null || value === undefined){
+      return '<span class="pill pill-none">—</span>';
+    }
+    const cls = value === 'Yes' ? 'pill-fine' : 'pill-danger';
+    return '<span class="pill ' + cls + '">' + svgIcon('sparkles', 12) + escapeHtml(String(value)) + '</span>';
+  }
+
+  function textCell(value){
+    if(!value) return '<span class="text-cell" title="">—</span>';
+    return '<span class="text-cell" title="' + escapeHtml(String(value)) + '">' + escapeHtml(String(value)) + '</span>';
+  }
+
+  /* ---------------- Build the entry form ---------------- */
+  function fieldHTML(m){
+    const id = m.key + 'Input';
+    if(m.formType === 'boolean'){
+      return '<div class="col-12 col-sm-6 col-lg-4">' +
+        '<label class="form-label" for="' + id + '">' + svgIcon(m.icon) + m.label + '</label>' +
+        '<select class="form-select" id="' + id + '">' +
+          '<option value="">—</option>' +
+          '<option value="Yes">Yes</option>' +
+          '<option value="No">No</option>' +
+        '</select>' +
+      '</div>';
+    }
+    const min = m.min !== undefined ? m.min : 0;
+    const max = m.max !== undefined ? ' max="' + m.max + '"' : '';
+    const step = m.step !== undefined ? m.step : 1;
+    const unitLabel = m.unit ? '<span class="input-suffix">' + m.unit.trim() + '</span>' : '';
+    return '<div class="col-12 col-sm-6 col-lg-4">' +
+      '<label class="form-label" for="' + id + '">' + svgIcon(m.icon) + m.label + '</label>' +
+      '<div class="d-flex align-items-center gap-2">' +
+        '<input type="number" min="' + min + '"' + max + ' step="' + step + '" class="form-control" id="' + id + '" placeholder="0">' +
+        unitLabel +
+      '</div>' +
+    '</div>';
+  }
+
+  function textFieldHTML(f){
+    const id = f.key + 'Input';
+    if(f.formType === 'textarea'){
+      return '<div class="col-12">' +
+        '<label class="form-label" for="' + id + '">' + svgIcon(f.icon) + f.label + '</label>' +
+        '<textarea class="form-control" id="' + id + '" rows="2" placeholder="' + f.placeholder + '"></textarea>' +
+      '</div>';
+    }
+    return '<div class="col-12 col-sm-6">' +
+      '<label class="form-label" for="' + id + '">' + svgIcon(f.icon) + f.label + '</label>' +
+      '<input type="text" class="form-control" id="' + id + '" placeholder="' + f.placeholder + '">' +
+    '</div>';
+  }
+
+  function renderFormFields(){
+    const groups = {};
+    METRICS.forEach(function(m){ (groups[m.group] = groups[m.group] || []).push(m); });
+    let html = '';
+    GROUP_ORDER.forEach(function(g){
+      if(!groups[g]) return;
+      const meta = GROUP_META[g];
+      html += '<p class="field-section-title">' + svgIcon(meta.icon, 14) + meta.label + '</p>';
+      html += '<div class="row g-3 mb-2">';
+      groups[g].forEach(function(m){ html += fieldHTML(m); });
+      html += '</div>';
+    });
+    document.getElementById('metricFieldsRow').innerHTML = html;
+
+    let th = '<p class="field-section-title">' + svgIcon('notebook', 14) + 'Reflect' + '</p><div class="row g-3">';
+    TEXT_FIELDS.forEach(function(f){ th += textFieldHTML(f); });
+    th += '</div>';
+    document.getElementById('textFieldsCol').innerHTML = th;
+  }
+  renderFormFields();
+
+  function clearFormFields(){
+    METRICS.forEach(function(m){
+      const el = document.getElementById(m.key + 'Input');
+      if(el) el.value = '';
+    });
+    TEXT_FIELDS.forEach(function(f){
+      const el = document.getElementById(f.key + 'Input');
+      if(el) el.value = '';
+    });
+  }
+
+  function collectPayload(){
+    const payload = { date: entryDate.value || todayISO() };
+    METRICS.forEach(function(m){
+      const el = document.getElementById(m.key + 'Input');
+      if(!el) return;
+      if(m.formType === 'boolean'){
+        payload[m.key] = el.value || '';
+      } else {
+        payload[m.key] = el.value !== '' ? Number(el.value) : '';
+      }
+    });
+    TEXT_FIELDS.forEach(function(f){
+      const el = document.getElementById(f.key + 'Input');
+      payload[f.key] = el ? el.value.trim() : '';
+    });
+    return payload;
+  }
+
+  /* ---------------- Ledger table ---------------- */
+  function buildColumns(){
+    const cols = [
+      { field:'date', title: svgIcon('calendar', 13) + 'Date', sortable:true, formatter: window.dateFormatter }
+    ];
+    METRICS.forEach(function(m){
+      cols.push({
+        field: m.key,
+        title: svgIcon(m.icon, 13) + m.label,
+        sortable: true,
+        formatter: function(value){
+          if(m.formType === 'boolean') return booleanPill(value);
+          return metricPill(value, m);
+        }
+      });
+    });
+    TEXT_FIELDS.forEach(function(f){
+      cols.push({
+        field: f.key,
+        title: svgIcon(f.icon, 13) + f.label,
+        formatter: function(value){ return textCell(value); }
+      });
+    });
+    return cols;
+  }
+
   window.dateFormatter = function(value){
     if(!value) return '—';
-    return `<span class="date-cell">${escapeHtml(formatDisplayDate(value))}</span>`;
+    return '<span class="date-cell">' + escapeHtml(formatDisplayDate(value)) + '</span>';
   };
-  window.waterFormatter = function(value){ return pill(value, ' L', thresholds.water); };
-  window.workoutFormatter = function(value){ return pill(value, ' min', thresholds.workout); };
-  window.readingFormatter = function(value){ return pill(value, ' min', thresholds.reading); };
-  window.textFormatter = function(value){ return value ? escapeHtml(String(value)) : '—'; };
+
+  function initLedgerTable(){
+    $('#ledgerTable').bootstrapTable({
+      columns: buildColumns(),
+      search: true,
+      pagination: true,
+      pageSize: 10,
+      pageList: [5, 10, 20, 50, 'All'],
+      sortName: 'date',
+      sortOrder: 'desc',
+      noDataText: "no entries yet — save your first one on the Daybook tab"
+    });
+  }
+  initLedgerTable();
 
   function renderLedger(entries){
     lastEntries = entries;
@@ -792,7 +955,6 @@
   }
 
   function refreshLedgerFormatting(){
-    // re-render with current threshold settings without re-fetching
     $('#ledgerTable').bootstrapTable('load', lastEntries);
   }
 
@@ -820,14 +982,7 @@
       return;
     }
 
-    const payload = {
-      date: entryDate.value || todayISO(),
-      water: waterInput.value ? Number(waterInput.value) : '',
-      workout: workoutInput.value ? Number(workoutInput.value) : '',
-      reading: readingInput.value ? Number(readingInput.value) : '',
-      book: bookInput.value.trim(),
-      notes: notesInput.value.trim()
-    };
+    const payload = collectPayload();
 
     submitBtn.disabled = true;
     setStatus('Saving…');
@@ -835,11 +990,7 @@
     try{
       await saveEntry(payload);
       setStatus('Saved to your sheet.', 'ok');
-      waterInput.value = '';
-      workoutInput.value = '';
-      readingInput.value = '';
-      bookInput.value = '';
-      notesInput.value = '';
+      clearFormFields();
       await refresh();
     }catch(err){
       console.error(err);
@@ -872,25 +1023,40 @@
   // --- Advanced panel ---
   const advToggle = document.getElementById('advToggle');
   const advPanel = document.getElementById('advPanel');
-  const advWaterFine = document.getElementById('advWaterFine');
-  const advWaterDanger = document.getElementById('advWaterDanger');
-  const advWorkoutFine = document.getElementById('advWorkoutFine');
-  const advWorkoutDanger = document.getElementById('advWorkoutDanger');
-  const advReadingFine = document.getElementById('advReadingFine');
-  const advReadingDanger = document.getElementById('advReadingDanger');
   const advPageSize = document.getElementById('advPageSize');
   const advStreakWindow = document.getElementById('advStreakWindow');
   const advExport = document.getElementById('advExport');
 
-  function fillAdvFields(){
-    advWaterFine.value = thresholds.water.fine;
-    advWaterDanger.value = thresholds.water.danger;
-    advWorkoutFine.value = thresholds.workout.fine;
-    advWorkoutDanger.value = thresholds.workout.danger;
-    advReadingFine.value = thresholds.reading.fine;
-    advReadingDanger.value = thresholds.reading.danger;
+  function renderAdvThresholds(){
+    const numericMetrics = METRICS.filter(m => m.formType !== 'boolean');
+    let html = '<div class="adv-grid">';
+    numericMetrics.forEach(function(m){
+      const fineLabel = m.direction === 'lower' ? 'Fine at or below' : 'Fine at or above';
+      const dangerLabel = m.direction === 'lower' ? 'Danger at or above' : 'Danger below';
+      html += '<div class="adv-metric-card">' +
+        '<span class="adv-metric-label">' + svgIcon(m.icon, 13) + m.label + '</span>' +
+        '<div class="adv-field">' +
+          '<label for="advFine_' + m.key + '">' + fineLabel + '</label>' +
+          '<input type="number" step="any" class="form-control adv-thresh" data-key="' + m.key + '" data-kind="fine" id="advFine_' + m.key + '">' +
+        '</div>' +
+        '<div class="adv-field">' +
+          '<label for="advDanger_' + m.key + '">' + dangerLabel + '</label>' +
+          '<input type="number" step="any" class="form-control adv-thresh" data-key="' + m.key + '" data-kind="danger" id="advDanger_' + m.key + '">' +
+        '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+    document.getElementById('advThresholdsGrid').innerHTML = html;
+    fillAdvFields();
   }
-  fillAdvFields();
+
+  function fillAdvFields(){
+    document.querySelectorAll('.adv-thresh').forEach(function(inp){
+      const key = inp.dataset.key, kind = inp.dataset.kind;
+      inp.value = thresholds[key][kind];
+    });
+  }
+  renderAdvThresholds();
 
   advToggle.addEventListener('click', () => {
     advPanel.classList.toggle('open');
@@ -898,11 +1064,10 @@
   });
 
   document.getElementById('advApply').addEventListener('click', () => {
-    thresholds = {
-      water:   { fine: Number(advWaterFine.value),   danger: Number(advWaterDanger.value) },
-      workout: { fine: Number(advWorkoutFine.value), danger: Number(advWorkoutDanger.value) },
-      reading: { fine: Number(advReadingFine.value), danger: Number(advReadingDanger.value) }
-    };
+    document.querySelectorAll('.adv-thresh').forEach(function(inp){
+      const key = inp.dataset.key, kind = inp.dataset.kind;
+      thresholds[key][kind] = Number(inp.value);
+    });
     refreshLedgerFormatting();
   });
 
@@ -926,8 +1091,8 @@
       setStatus('Nothing to export yet.', 'err');
       return;
     }
-    const cols = ['date', 'water', 'workout', 'reading', 'book', 'notes'];
-    const header = ['Date', 'Water (L)', 'Workout (min)', 'Reading (min)', 'Book', 'Notes'];
+    const cols = ['date'].concat(METRICS.map(m => m.key)).concat(TEXT_FIELDS.map(f => f.key));
+    const header = ['Date'].concat(METRICS.map(m => m.label)).concat(TEXT_FIELDS.map(f => f.label));
     const rows = [...lastEntries].sort((a,b) => b.date.localeCompare(a.date)).map(e =>
       cols.map(c => {
         const v = e[c] === undefined || e[c] === null ? '' : String(e[c]);
@@ -1011,7 +1176,6 @@
       lockScreen.hidden = true;
       mainPage.hidden = false;
 
-      // Initialise the datepicker only once the field is visible.
       $('#entryDate').datepicker({
         format: 'yyyy-mm-dd',
         autoclose: true,
