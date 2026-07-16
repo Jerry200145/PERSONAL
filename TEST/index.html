@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daybook — Daily Activity Log</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Bootstrap Datepicker -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+
+<!-- Bootstrap Table -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.4/dist/bootstrap-table.min.css" rel="stylesheet">
+
+<style>
+  :root{
+    --paper: #F7F1E3;
+    --paper-dark: #EFE6CF;
+    --ink: #1F3A2C;
+    --ink-soft: #3E5648;
+    --rule: #C9A961;
+    --accent: #C1592B;
+    --accent-dark: #A2441E;
+    --ok: #4A7856;
+    --ok-bg: #D9EADD;
+    --low: #92650F;
+    --low-bg: #F5E3B3;
+    --danger: #A2321E;
+    --danger-bg: #F3CFC7;
+  }
+
+  *{ box-sizing:border-box; }
+
+  body{
+    background: var(--paper);
+    background-image: linear-gradient(var(--paper-dark) 1px, transparent 1px);
+    background-size: 100% 2.1rem;
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding-bottom: 4rem;
+  }
+
+  h1, h2, .brand{ font-family: 'Fraunces', serif; }
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+
+  .page{
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.1rem 0;
+  }
+
+  /* --- Header / masthead --- */
+  .masthead{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .brand-block{ display:flex; flex-direction:column; gap:0.15rem; }
+  .brand{
+    font-size: clamp(1.4rem, 4.5vw, 1.85rem);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    margin:0;
+    color: var(--ink);
+  }
+  .brand small{
+    display:block;
+    font-family:'IBM Plex Sans';
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 500;
+    margin-top: 2px;
+  }
+  .today-stamp{
+    font-family:'IBM Plex Mono';
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+  }
+
+  .header-controls{
+    display:flex;
+    align-items:center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .tab-nav{ display:flex; gap: 0.5rem; }
+  .tab-btn{
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono';
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.15rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .tab-btn:hover:not(.active){ background: var(--paper-dark); }
+  .tab-btn.active{ background: var(--ink); color: var(--paper); }
+
+  .header-actions{ display:flex; align-items:center; gap: 0.6rem; }
+  .user-chip{
+    font-family:'IBM Plex Mono'; font-size: 0.68rem; color: var(--ink-soft);
+    letter-spacing: 0.03em; white-space: nowrap;
+  }
+  .logout-btn{
+    font-size: 0.72rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .gear-btn{
+    background: none;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    width: 36px; height: 36px;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--ink);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .gear-btn:hover, .gear-btn.active{ background: var(--ink); color: var(--paper); }
+  .gear-btn svg{ width: 16px; height: 16px; }
+
+  /* --- Streak dots --- */
+  .streak{ display:flex; gap: 8px; align-items:center; margin: 1.4rem 0 2rem; flex-wrap: wrap; }
+  .streak-label{
+    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); margin-right: 6px;
+  }
+  .dot{
+    width: 11px; height: 11px; border-radius: 50%;
+    border: 1.5px solid var(--ink); background: transparent; position: relative;
+  }
+  .dot.filled{ background: var(--accent); border-color: var(--accent); }
+  .dot .dow{
+    position:absolute; top: 14px; left:50%; transform:translateX(-50%);
+    font-size: 0.6rem; color: var(--ink-soft); font-family:'IBM Plex Mono';
+  }
+
+  /* --- Notebook block --- */
+  .leaf{
+    background: rgba(255,255,255,0.35);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 1.75rem 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .leaf::before{
+    content: attr(data-tab);
+    position:absolute;
+    top: -0.65rem; left: 1.25rem;
+    background: var(--paper);
+    padding: 0 0.6rem;
+    font-family:'IBM Plex Mono';
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  label.form-label{
+    font-family:'IBM Plex Mono';
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 0.35rem;
+  }
+
+  .form-control, .form-select{
+    background: var(--paper);
+    border: none;
+    border-bottom: 1.5px solid var(--ink);
+    border-radius: 0;
+    padding: 0.5rem 0.25rem;
+    color: var(--ink);
+    font-family:'IBM Plex Sans';
+  }
+  .form-control:focus, .form-select:focus{
+    background: var(--paper);
+    box-shadow: none;
+    border-bottom: 2px solid var(--accent);
+    color: var(--ink);
+  }
+  .form-control::placeholder{ color: #9AA79E; }
+
+  .input-suffix{ font-family:'IBM Plex Mono'; font-size: 0.78rem; color: var(--ink-soft); }
+
+  .btn-ink{
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 2px;
+    font-family:'IBM Plex Mono';
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.4rem;
+    border: 1px solid var(--ink);
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  .btn-ink:hover{ background: var(--accent-dark); border-color: var(--accent-dark); color:#fff; }
+  .btn-ink:active{ transform: translateY(1px); }
+  .btn-ink:disabled{ opacity: 0.6; }
+
+  .btn-outline-ink{
+    background: transparent;
+    color: var(--ink);
+    border-radius: 2px;
+    font-family:'IBM Plex Mono';
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.1rem;
+    border: 1px solid var(--ink);
+  }
+  .btn-outline-ink:hover{ background: var(--paper-dark); }
+
+  .status-line{
+    font-family:'IBM Plex Mono';
+    font-size: 0.78rem;
+    margin-top: 0.75rem;
+    min-height: 1.2rem;
+  }
+  .status-line.ok{ color: var(--ok); }
+  .status-line.err{ color: var(--accent-dark); }
+
+  /* --- Tab panels --- */
+  .tab-panel{ display:none; }
+  .tab-panel.active{ display:block; }
+
+  /* --- Ledger --- */
+  .ledger-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 0.75rem; flex-wrap:wrap; gap:0.5rem; }
+  .ledger-head h2{ font-size: 1.15rem; font-weight:600; margin:0; }
+  .refresh-link{
+    font-family:'IBM Plex Mono'; font-size: 0.72rem; letter-spacing:0.08em;
+    text-transform:uppercase; color: var(--ink-soft); text-decoration:none;
+    border-bottom: 1px dashed var(--ink-soft); cursor:pointer;
+  }
+  .refresh-link:hover{ color: var(--accent-dark); border-color: var(--accent-dark); }
+
+  .pill{
+    display:inline-block;
+    padding: 0.18rem 0.55rem;
+    border-radius: 999px;
+    font-family: 'IBM Plex Mono';
+    font-size: 0.76rem;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+  .pill-fine{ background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
+  .pill-low{ background: var(--low-bg); color: var(--low); border-color: var(--low); }
+  .pill-danger{ background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
+  .pill-none{ color: var(--ink-soft); border: none; padding-left: 0; }
+
+  /* --- Bootstrap Table theming to match the notebook look --- */
+  .bootstrap-table{ font-family:'IBM Plex Sans'; }
+  .fixed-table-toolbar .search input{
+    background: var(--paper);
+    border: none;
+    border-bottom: 1.5px solid var(--ink);
+    border-radius: 0;
+    box-shadow: none;
+    font-family:'IBM Plex Sans';
+  }
+  .fixed-table-toolbar .search input:focus{ border-bottom: 2px solid var(--accent); }
+  .fixed-table-container{
+    border: 1px solid var(--rule);
+    background: rgba(255,255,255,0.35);
+  }
+  .fixed-table-container table.table{ margin-bottom:0; }
+  .table thead th{
+    font-family:'IBM Plex Mono' !important;
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft) !important;
+    background: var(--paper-dark) !important;
+    border-bottom: 1.5px solid var(--ink) !important;
+    font-weight:500;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  .table td{
+    border-bottom: 1px dashed var(--rule) !important;
+    font-size: 0.86rem;
+    vertical-align: middle;
+    background: transparent !important;
+  }
+  .table td.date-cell{ font-family:'IBM Plex Mono'; font-size:0.78rem; white-space:nowrap; }
+  .fixed-table-pagination .page-link{
+    color: var(--ink);
+    border-color: var(--rule);
+    font-family:'IBM Plex Mono';
+    font-size: 0.78rem;
+  }
+  .fixed-table-pagination .page-item.active .page-link{
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+  .fixed-table-pagination .page-item.disabled .page-link{ background: transparent; }
+  .fixed-table-toolbar .form-control{ border-radius:0; }
+  .bs-bars, .search, .columns{ font-family:'IBM Plex Mono'; font-size:0.76rem; }
+  .no-records-found{ text-align:center; color: var(--ink-soft); font-style: italic; }
+
+  /* --- Bootstrap Datepicker theming --- */
+  .datepicker{
+    font-family:'IBM Plex Sans';
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.4rem;
+  }
+  .datepicker table tr td.active.active, .datepicker table tr td.active:hover.active{
+    background: var(--accent) !important;
+    background-image: none !important;
+    color: #fff;
+  }
+  .datepicker table tr td.today, .datepicker table tr td.today:hover{
+    background: var(--paper-dark) !important;
+    background-image: none !important;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+  .datepicker table tr td:hover, .datepicker table tr td span:hover{ background: var(--paper-dark); }
+  .datepicker .datepicker-switch, .datepicker .prev, .datepicker .next{ font-family:'IBM Plex Mono'; }
+
+  /* --- Advanced panel --- */
+  .adv-panel{
+    display:none;
+    margin-bottom: 2rem;
+  }
+  .adv-panel.open{ display:block; }
+  .adv-section-title{
+    font-family:'IBM Plex Mono'; font-size: 0.7rem; letter-spacing:0.1em;
+    text-transform:uppercase; color: var(--accent-dark); margin: 1.4rem 0 0.75rem;
+    border-bottom: 1px dashed var(--rule); padding-bottom: 0.4rem;
+  }
+  .adv-section-title:first-of-type{ margin-top: 0; }
+  .adv-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  .adv-metric-label{
+    font-family:'IBM Plex Mono'; font-size: 0.72rem; letter-spacing:0.08em;
+    text-transform:uppercase; color: var(--ink); margin-bottom: 0.5rem; display:block;
+  }
+  .adv-field{ margin-bottom: 0.6rem; }
+  .adv-field label{
+    font-size: 0.68rem; color: var(--ink-soft); display:block; margin-bottom: 0.2rem;
+  }
+  .adv-row{ display:flex; gap:1.25rem; flex-wrap:wrap; align-items:flex-end; }
+  .adv-row .adv-field{ min-width: 160px; flex: 1; }
+  .adv-note{
+    font-size: 0.78rem; color: var(--ink-soft); margin-top: 1rem; line-height: 1.5;
+  }
+  @media (max-width: 620px){
+    .adv-grid{ grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 520px){
+    .page{ padding-top: 2rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){ .btn-ink{ transition:none; } }
+
+  /* --- Lock / login screens --- */
+  .lock-screen{
+    position: fixed; inset: 0; background: var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.25rem; z-index: 10;
+  }
+  .lock-card{
+    max-width: 380px; width: 100%;
+    background: rgba(255,255,255,0.4);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 2rem 1.75rem;
+    text-align: center;
+  }
+  .lock-eyebrow{
+    font-family: 'IBM Plex Mono'; font-size: 0.7rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem;
+  }
+  .lock-title{ font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--ink); }
+  .lock-copy{ font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 1.5rem; line-height: 1.5; }
+  .lock-input{ text-align: center; margin-bottom: 1rem; }
+  .lock-btn{ width: 100%; }
+  .lock-screen .status-line{ margin-top: 1rem; }
+
+  .setup-note{
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    border-left: 3px solid var(--rule);
+    padding-left: 0.9rem;
+    margin-top: 2.5rem;
+  }
+  .setup-note code{ background: var(--paper-dark); padding: 0.1rem 0.35rem; border-radius: 2px; color: var(--ink); }
+</style>
+</head>
+<body>
+
+<!-- Screen 1: login (username + password from the Users sheet) -->
+<div id="loginScreen" class="lock-screen">
+  <div class="lock-card">
+    <p class="lock-eyebrow">Daybook</p>
+    <h1 class="lock-title">Sign in</h1>
+    <p class="lock-copy">Enter the username and password set up for this ledger.</p>
+    <form id="loginForm">
+      <input type="text" id="loginUser" class="form-control lock-input" placeholder="Username" autocomplete="username" required>
+      <input type="password" id="loginPass" class="form-control lock-input" placeholder="Password" autocomplete="current-password" required>
+      <button type="submit" class="btn btn-ink lock-btn">Sign in</button>
+    </form>
+    <p class="status-line" id="loginStatus"></p>
+  </div>
+</div>
+
+<!-- Screen 2: ledger key (shown only after a successful login) -->
+<div id="lockScreen" class="lock-screen" hidden>
+  <div class="lock-card">
+    <p class="lock-eyebrow">Daybook</p>
+    <h1 class="lock-title">Enter the ledger key</h1>
+    <p class="lock-copy">This page is shared between two people only. Ask whoever set it up for the access code.</p>
+    <form id="lockForm">
+      <input type="password" id="lockInput" class="form-control lock-input" placeholder="Access code" autocomplete="off" required>
+      <button type="submit" class="btn btn-ink lock-btn">Unlock</button>
+    </form>
+    <p class="status-line" id="lockStatus"></p>
+  </div>
+</div>
+
+<div class="page" id="mainPage" hidden>
+
+  <header class="masthead">
+    <div class="brand-block">
+      <h1 class="brand">Daybook<small>a small ledger of small habits</small></h1>
+      <span class="today-stamp" id="todayStamp"></span>
+    </div>
+    <div class="header-controls">
+      <nav class="tab-nav">
+        <button type="button" class="tab-btn active" data-tab="daybook">Daybook</button>
+        <button type="button" class="tab-btn" data-tab="ledger">Ledger</button>
+      </nav>
+      <div class="header-actions">
+        <span class="user-chip" id="userChip"></span>
+        <button type="button" class="gear-btn" id="advToggle" title="Advanced settings" aria-label="Advanced settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+        </button>
+        <button type="button" class="btn btn-outline-ink logout-btn" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Advanced settings: display-only thresholds + view options for this page -->
+  <section class="leaf adv-panel" id="advPanel" data-tab="Advanced options">
+
+    <p class="adv-section-title">Display thresholds</p>
+    <div class="adv-grid">
+      <div>
+        <span class="adv-metric-label">Water (L)</span>
+        <div class="adv-field">
+          <label for="advWaterFine">Fine at or above</label>
+          <input type="number" step="0.1" class="form-control" id="advWaterFine">
+        </div>
+        <div class="adv-field">
+          <label for="advWaterDanger">Danger below</label>
+          <input type="number" step="0.1" class="form-control" id="advWaterDanger">
+        </div>
+      </div>
+      <div>
+        <span class="adv-metric-label">Workout (min)</span>
+        <div class="adv-field">
+          <label for="advWorkoutFine">Fine at or above</label>
+          <input type="number" class="form-control" id="advWorkoutFine">
+        </div>
+        <div class="adv-field">
+          <label for="advWorkoutDanger">Danger below</label>
+          <input type="number" class="form-control" id="advWorkoutDanger">
+        </div>
+      </div>
+      <div>
+        <span class="adv-metric-label">Reading (min)</span>
+        <div class="adv-field">
+          <label for="advReadingFine">Fine at or above</label>
+          <input type="number" class="form-control" id="advReadingFine">
+        </div>
+        <div class="adv-field">
+          <label for="advReadingDanger">Danger below</label>
+          <input type="number" class="form-control" id="advReadingDanger">
+        </div>
+      </div>
+    </div>
+    <div class="d-flex gap-2 mt-2 flex-wrap">
+      <button type="button" class="btn btn-ink" id="advApply">Apply thresholds</button>
+      <button type="button" class="btn btn-outline-ink" id="advReset">Reset to defaults</button>
+    </div>
+
+    <p class="adv-section-title">View options</p>
+    <div class="adv-row">
+      <div class="adv-field">
+        <label for="advPageSize">Ledger rows per page</label>
+        <select class="form-select" id="advPageSize">
+          <option value="5">5</option>
+          <option value="10" selected>10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+      <div class="adv-field">
+        <label for="advStreakWindow">Streak window</label>
+        <select class="form-select" id="advStreakWindow">
+          <option value="7" selected>Last 7 days</option>
+          <option value="14">Last 14 days</option>
+          <option value="30">Last 30 days</option>
+        </select>
+      </div>
+      <div class="adv-field">
+        <label>&nbsp;</label>
+        <button type="button" class="btn btn-outline-ink" id="advExport">Export ledger as CSV</button>
+      </div>
+    </div>
+
+    <p class="adv-note">
+      Thresholds and view options only change how this page displays entries. The colours already
+      written into the Google Sheet itself are set at save time using the thresholds inside
+      <code>Code.gs</code> — change those there and redeploy if you want the sheet colours to match.
+    </p>
+  </section>
+
+  <!-- Daybook tab: streak + entry form -->
+  <div class="tab-panel active" id="tab-daybook">
+
+    <div class="streak" id="streak">
+      <span class="streak-label" id="streakLabel">Last 7 days</span>
+    </div>
+
+    <section class="leaf" data-tab="Today's entry">
+      <form id="logForm" novalidate>
+        <div class="row g-3">
+          <div class="col-12 col-sm-6">
+            <label class="form-label" for="entryDate">Date</label>
+            <input type="text" class="form-control" id="entryDate" placeholder="yyyy-mm-dd" autocomplete="off" required>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label" for="waterInput">Water intake</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="number" step="0.1" min="0" class="form-control" id="waterInput" placeholder="0.0">
+              <span class="input-suffix">litres</span>
+            </div>
+          </div>
+
+          <div class="col-12 col-sm-6">
+            <label class="form-label" for="workoutInput">Workout</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="number" min="0" class="form-control" id="workoutInput" placeholder="0">
+              <span class="input-suffix">minutes</span>
+            </div>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="form-label" for="readingInput">Reading</label>
+            <div class="d-flex align-items-center gap-2">
+              <input type="number" min="0" class="form-control" id="readingInput" placeholder="0">
+              <span class="input-suffix">minutes</span>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="bookInput">Book / topic (optional)</label>
+            <input type="text" class="form-control" id="bookInput" placeholder="e.g. Atomic Habits">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label" for="notesInput">Notes (optional)</label>
+            <textarea class="form-control" id="notesInput" rows="2" placeholder="anything else worth remembering about today"></textarea>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 mt-3 flex-wrap">
+          <button type="submit" class="btn btn-ink" id="submitBtn">Save entry</button>
+          <span class="status-line" id="statusLine"></span>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <!-- Ledger tab: full history table -->
+  <div class="tab-panel" id="tab-ledger">
+    <section>
+      <div class="ledger-head">
+        <h2>Ledger</h2>
+        <a class="refresh-link" id="refreshLink">refresh</a>
+      </div>
+      <table id="ledgerTable"
+             data-toggle="table"
+             data-search="true"
+             data-pagination="true"
+             data-page-size="10"
+             data-page-list="[5, 10, 20, 50, All]"
+             data-sort-name="date"
+             data-sort-order="desc"
+             data-no-data-text="no entries yet — save your first one on the Daybook tab">
+        <thead>
+          <tr>
+            <th data-field="date" data-sortable="true" data-formatter="dateFormatter">Date</th>
+            <th data-field="water" data-sortable="true" data-formatter="waterFormatter">Water</th>
+            <th data-field="workout" data-sortable="true" data-formatter="workoutFormatter">Workout</th>
+            <th data-field="reading" data-sortable="true" data-formatter="readingFormatter">Reading</th>
+            <th data-field="book" data-sortable="true" data-formatter="textFormatter">Book</th>
+            <th data-field="notes" data-formatter="textFormatter">Notes</th>
+          </tr>
+        </thead>
+      </table>
+    </section>
+  </div>
+
+  <p class="setup-note">
+    Entries are saved to a Google Sheet through a small Apps Script web app.
+    Set <code>SCRIPT_URL</code> near the top of the script tag below to your deployed
+    web app URL before this page will save or load anything.
+  </p>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.4/dist/bootstrap-table.min.js"></script>
+
+<script>
+  // ======= CONFIGURE THIS =======
+  // Paste the URL you get after deploying the companion Apps Script as a Web App.
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXpSiVJrsNjkd3FStuegrq7Y-WHP90brHUcQgPuW6xJMxQZaNbTOmcKjU2MyTxycoe/exec";
+  // ================================
+
+  // Neither the login password nor the ledger key is stored in this file.
+  // Both are entered at runtime, so this file has nothing secret to leak
+  // even if it sits in a public GitHub repo.
+  let TOKEN = null;
+  let CURRENT_USER = null;
+
+  // Default display thresholds — matches the defaults baked into Code.gs.
+  // Editable live via the Advanced panel (page display only).
+  const DEFAULT_THRESHOLDS = {
+    water:   { fine: 2,  danger: 1  },
+    workout: { fine: 20, danger: 5  },
+    reading: { fine: 30, danger: 10 }
+  };
+  let thresholds = JSON.parse(JSON.stringify(DEFAULT_THRESHOLDS));
+  let lastEntries = [];
+  let streakWindow = 7;
+
+  const entryDate = document.getElementById('entryDate');
+  const waterInput = document.getElementById('waterInput');
+  const workoutInput = document.getElementById('workoutInput');
+  const readingInput = document.getElementById('readingInput');
+  const bookInput = document.getElementById('bookInput');
+  const notesInput = document.getElementById('notesInput');
+  const statusLine = document.getElementById('statusLine');
+  const submitBtn = document.getElementById('submitBtn');
+  const todayStamp = document.getElementById('todayStamp');
+  const streakEl = document.getElementById('streak');
+  const streakLabel = document.getElementById('streakLabel');
+  const refreshLink = document.getElementById('refreshLink');
+  const userChip = document.getElementById('userChip');
+
+  function todayISO(){
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().slice(0,10);
+  }
+
+  function formatDisplayDate(iso){
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  }
+
+  todayStamp.textContent = new Date().toLocaleDateString('en-GB', {
+    weekday:'long', day:'numeric', month:'long', year:'numeric'
+  });
+
+  function configured(){
+    return SCRIPT_URL && !SCRIPT_URL.startsWith('PASTE_') && !!TOKEN;
+  }
+
+  function setStatus(msg, type){
+    statusLine.textContent = msg;
+    statusLine.className = 'status-line' + (type ? ' ' + type : '');
+  }
+
+  async function apiPost(body){
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids CORS preflight
+      body: JSON.stringify(body)
+    });
+    if(!res.ok) throw new Error('Request failed: ' + res.status);
+    const data = await res.json();
+    if (data.ok === false) throw new Error(data.error || 'Rejected by server');
+    return data;
+  }
+
+  async function saveEntry(payload){
+    return apiPost({ action: 'save', ...payload, token: TOKEN });
+  }
+
+  async function loadEntries(){
+    const url = SCRIPT_URL + '?action=list&token=' + encodeURIComponent(TOKEN);
+    const res = await fetch(url, { method: 'GET' });
+    if(!res.ok) throw new Error('Request failed: ' + res.status);
+    const data = await res.json();
+    if (data.ok === false) throw new Error(data.error || 'Rejected by server');
+    return data;
+  }
+
+  async function attemptLogin(username, password){
+    return apiPost({ action: 'login', username, password });
+  }
+
+  function renderStreak(entries){
+    streakEl.querySelectorAll('.dot').forEach(d => d.remove());
+    streakLabel.textContent = 'Last ' + streakWindow + ' days';
+    const loggedDates = new Set(entries.map(e => e.date));
+    const today = new Date();
+    for(let i = streakWindow - 1; i >= 0; i--){
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const iso = d.toISOString().slice(0,10);
+      const dow = d.toLocaleDateString('en-GB', { weekday:'narrow' });
+      const dot = document.createElement('span');
+      dot.className = 'dot' + (loggedDates.has(iso) ? ' filled' : '');
+      dot.title = iso;
+      const label = document.createElement('span');
+      label.className = 'dow';
+      label.textContent = dow;
+      dot.appendChild(label);
+      streakEl.appendChild(dot);
+    }
+  }
+
+  function statusFor(value, cfg){
+    if(value === '' || value === null || value === undefined) return null;
+    const n = Number(value);
+    if(Number.isNaN(n)) return null;
+    if(n >= cfg.fine) return 'fine';
+    if(n >= cfg.danger) return 'low';
+    return 'danger';
+  }
+
+  function pill(value, unit, cfg){
+    if(value === '' || value === null || value === undefined){
+      return '<span class="pill pill-none">—</span>';
+    }
+    const status = statusFor(value, cfg);
+    const cls = status === 'fine' ? 'pill-fine' : status === 'low' ? 'pill-low' : 'pill-danger';
+    return `<span class="pill ${cls}">${escapeHtml(String(value))}${unit}</span>`;
+  }
+
+  function escapeHtml(str){
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // --- Bootstrap Table cell formatters (must be in global scope) ---
+  window.dateFormatter = function(value){
+    if(!value) return '—';
+    return `<span class="date-cell">${escapeHtml(formatDisplayDate(value))}</span>`;
+  };
+  window.waterFormatter = function(value){ return pill(value, ' L', thresholds.water); };
+  window.workoutFormatter = function(value){ return pill(value, ' min', thresholds.workout); };
+  window.readingFormatter = function(value){ return pill(value, ' min', thresholds.reading); };
+  window.textFormatter = function(value){ return value ? escapeHtml(String(value)) : '—'; };
+
+  function renderLedger(entries){
+    lastEntries = entries;
+    $('#ledgerTable').bootstrapTable('load', entries);
+  }
+
+  function refreshLedgerFormatting(){
+    // re-render with current threshold settings without re-fetching
+    $('#ledgerTable').bootstrapTable('load', lastEntries);
+  }
+
+  async function refresh(){
+    if(!configured()){
+      setStatus('Not signed in yet.', 'err');
+      renderStreak([]);
+      return;
+    }
+    try{
+      const data = await loadEntries();
+      renderLedger(data.entries || []);
+      renderStreak(data.entries || []);
+    }catch(err){
+      console.error(err);
+      setStatus('Could not load entries from the sheet.', 'err');
+    }
+  }
+
+  document.getElementById('logForm').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+
+    if(!configured()){
+      setStatus('Not signed in yet.', 'err');
+      return;
+    }
+
+    const payload = {
+      date: entryDate.value || todayISO(),
+      water: waterInput.value ? Number(waterInput.value) : '',
+      workout: workoutInput.value ? Number(workoutInput.value) : '',
+      reading: readingInput.value ? Number(readingInput.value) : '',
+      book: bookInput.value.trim(),
+      notes: notesInput.value.trim()
+    };
+
+    submitBtn.disabled = true;
+    setStatus('Saving…');
+
+    try{
+      await saveEntry(payload);
+      setStatus('Saved to your sheet.', 'ok');
+      waterInput.value = '';
+      workoutInput.value = '';
+      readingInput.value = '';
+      bookInput.value = '';
+      notesInput.value = '';
+      await refresh();
+    }catch(err){
+      console.error(err);
+      setStatus('Save failed — check the console and your SCRIPT_URL.', 'err');
+    }finally{
+      submitBtn.disabled = false;
+    }
+  });
+
+  refreshLink.addEventListener('click', refresh);
+
+  // --- Tabs ---
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabPanels = {
+    daybook: document.getElementById('tab-daybook'),
+    ledger: document.getElementById('tab-ledger')
+  };
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      Object.values(tabPanels).forEach(p => p.classList.remove('active'));
+      tabPanels[btn.dataset.tab].classList.add('active');
+      if(btn.dataset.tab === 'ledger'){
+        $('#ledgerTable').bootstrapTable('resetView');
+      }
+    });
+  });
+
+  // --- Advanced panel ---
+  const advToggle = document.getElementById('advToggle');
+  const advPanel = document.getElementById('advPanel');
+  const advWaterFine = document.getElementById('advWaterFine');
+  const advWaterDanger = document.getElementById('advWaterDanger');
+  const advWorkoutFine = document.getElementById('advWorkoutFine');
+  const advWorkoutDanger = document.getElementById('advWorkoutDanger');
+  const advReadingFine = document.getElementById('advReadingFine');
+  const advReadingDanger = document.getElementById('advReadingDanger');
+  const advPageSize = document.getElementById('advPageSize');
+  const advStreakWindow = document.getElementById('advStreakWindow');
+  const advExport = document.getElementById('advExport');
+
+  function fillAdvFields(){
+    advWaterFine.value = thresholds.water.fine;
+    advWaterDanger.value = thresholds.water.danger;
+    advWorkoutFine.value = thresholds.workout.fine;
+    advWorkoutDanger.value = thresholds.workout.danger;
+    advReadingFine.value = thresholds.reading.fine;
+    advReadingDanger.value = thresholds.reading.danger;
+  }
+  fillAdvFields();
+
+  advToggle.addEventListener('click', () => {
+    advPanel.classList.toggle('open');
+    advToggle.classList.toggle('active');
+  });
+
+  document.getElementById('advApply').addEventListener('click', () => {
+    thresholds = {
+      water:   { fine: Number(advWaterFine.value),   danger: Number(advWaterDanger.value) },
+      workout: { fine: Number(advWorkoutFine.value), danger: Number(advWorkoutDanger.value) },
+      reading: { fine: Number(advReadingFine.value), danger: Number(advReadingDanger.value) }
+    };
+    refreshLedgerFormatting();
+  });
+
+  document.getElementById('advReset').addEventListener('click', () => {
+    thresholds = JSON.parse(JSON.stringify(DEFAULT_THRESHOLDS));
+    fillAdvFields();
+    refreshLedgerFormatting();
+  });
+
+  advPageSize.addEventListener('change', () => {
+    $('#ledgerTable').bootstrapTable('refreshOptions', { pageSize: Number(advPageSize.value) });
+  });
+
+  advStreakWindow.addEventListener('change', () => {
+    streakWindow = Number(advStreakWindow.value);
+    renderStreak(lastEntries);
+  });
+
+  advExport.addEventListener('click', () => {
+    if(!lastEntries.length){
+      setStatus('Nothing to export yet.', 'err');
+      return;
+    }
+    const cols = ['date', 'water', 'workout', 'reading', 'book', 'notes'];
+    const header = ['Date', 'Water (L)', 'Workout (min)', 'Reading (min)', 'Book', 'Notes'];
+    const rows = [...lastEntries].sort((a,b) => b.date.localeCompare(a.date)).map(e =>
+      cols.map(c => {
+        const v = e[c] === undefined || e[c] === null ? '' : String(e[c]);
+        return '"' + v.replace(/"/g, '""') + '"';
+      }).join(',')
+    );
+    const csv = [header.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'daybook-export-' + todayISO() + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // --- Logout ---
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    TOKEN = null;
+    CURRENT_USER = null;
+    document.getElementById('mainPage').hidden = true;
+    document.getElementById('lockScreen').hidden = true;
+    document.getElementById('lockInput').value = '';
+    document.getElementById('lockStatus').textContent = '';
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginStatus').textContent = '';
+    document.getElementById('loginScreen').hidden = false;
+    document.getElementById('loginUser').focus();
+  });
+
+  // --- Screen 1: login ---
+  const loginScreen = document.getElementById('loginScreen');
+  const lockScreen = document.getElementById('lockScreen');
+  const mainPage = document.getElementById('mainPage');
+  const loginForm = document.getElementById('loginForm');
+  const loginUser = document.getElementById('loginUser');
+  const loginPass = document.getElementById('loginPass');
+  const loginStatus = document.getElementById('loginStatus');
+
+  loginForm.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const username = loginUser.value.trim();
+    const password = loginPass.value;
+    if(!username || !password) return;
+
+    loginStatus.textContent = 'Checking…';
+    loginStatus.className = 'status-line';
+
+    try{
+      await attemptLogin(username, password);
+      CURRENT_USER = username;
+      userChip.textContent = 'Signed in as ' + username;
+      loginScreen.hidden = true;
+      lockScreen.hidden = false;
+      document.getElementById('lockInput').focus();
+    }catch(err){
+      console.error(err);
+      loginStatus.textContent = 'Incorrect username or password.';
+      loginStatus.className = 'status-line err';
+      loginPass.value = '';
+      loginPass.focus();
+    }
+  });
+
+  // --- Screen 2: ledger key ---
+  const lockForm = document.getElementById('lockForm');
+  const lockInput = document.getElementById('lockInput');
+  const lockStatus = document.getElementById('lockStatus');
+
+  lockForm.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const candidate = lockInput.value.trim();
+    if (!candidate) return;
+
+    lockStatus.textContent = 'Checking…';
+    lockStatus.className = 'status-line';
+    TOKEN = candidate;
+
+    try {
+      const data = await loadEntries();
+      lockScreen.hidden = true;
+      mainPage.hidden = false;
+
+      // Initialise the datepicker only once the field is visible.
+      $('#entryDate').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+      });
+      entryDate.value = todayISO();
+
+      renderLedger(data.entries || []);
+      renderStreak(data.entries || []);
+    } catch (err) {
+      console.error(err);
+      TOKEN = null;
+      lockStatus.textContent = 'Incorrect code — try again.';
+      lockStatus.className = 'status-line err';
+      lockInput.value = '';
+      lockInput.focus();
+    }
+  });
+
+  loginUser.focus();
+</script>
+
+</body>
+</html>
