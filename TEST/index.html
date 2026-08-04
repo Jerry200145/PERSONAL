@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daybook — Daily Activity Log</title>
+<title>Daybook — A Field Journal of Small Days</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 
 <!-- Bootstrap Datepicker -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/css/bootstrap-datepicker3.min.css" rel="stylesheet">
@@ -17,445 +17,476 @@
 
 <style>
   :root{
-    --paper: #F7F1E3;
-    --paper-dark: #EFE6CF;
-    --card: #FCF8EE;
-    --ink: #1F3A2C;
-    --ink-soft: #3E5648;
-    --ink-faint: #74846F;
-    --rule: #C9A961;
-    --accent: #C1592B;
-    --accent-dark: #A2441E;
-    --ok: #4A7856;
-    --ok-bg: #D9EADD;
-    --low: #92650F;
-    --low-bg: #F5E3B3;
-    --danger: #A2321E;
-    --danger-bg: #F3CFC7;
-    --shadow: rgba(31, 58, 44, 0.16);
+    /* soft cool mist — the base this whole build floats on */
+    --bg: #EEF5F4;
+    --bg-dot: #DCEBE8;
+    --card: #FFFFFF;
+    --card-soft: #EAF3F1;
+
+    --ink: #1C2B2E;
+    --ink-soft: #4E6569;
+    --ink-faint: #93A6A8;
+
+    --rule: #D3E4E1;      /* soft hairline, replaces the old brass rule */
+    --rule-soft: #E4EFED;
+
+    --accent: #2E8079;    /* teal — the calm half of the palette */
+    --accent-dark: #1D5852;
+    --accent-soft: #DDF0EC;
+
+    --indigo: #6C6FD8;    /* the playful half */
+    --indigo-dark: #4C4FB0;
+    --indigo-soft: #EAEAFC;
+
+    --pop: #FF8B6E;       /* one warm coral pop, spent carefully */
+    --pop-dark: #E36F52;
+
+    --ok: #2E9E6E;   --ok-bg: #DEF3E9;
+    --low: #D99A2B;  --low-bg: #FBEFD7;
+    --danger: #E15B4E; --danger-bg: #FCE2DE;
+
+    --shadow: rgba(24, 48, 48, 0.14);
+    --radius-lg: 26px;
+    --radius-md: 18px;
+    --radius-sm: 12px;
   }
 
   *{ box-sizing:border-box; }
 
   body{
-    background: var(--paper);
-    background-image: linear-gradient(var(--paper-dark) 1px, transparent 1px);
-    background-size: 100% 2.1rem;
+    background:
+      radial-gradient(var(--bg-dot) 1.6px, transparent 1.6px),
+      var(--bg);
+    background-size: 22px 22px, 100%;
     color: var(--ink);
-    font-family: 'IBM Plex Sans', sans-serif;
+    font-family: 'Plus Jakarta Sans', sans-serif;
     min-height: 100vh;
     padding-bottom: 4rem;
   }
 
-  h1, h2, .brand{ font-family: 'Fraunces', serif; }
-  .mono{ font-family: 'IBM Plex Mono', monospace; }
+  h1, h2, .brand{ font-family: 'Fredoka', sans-serif; font-weight: 600; }
+  .mono{ font-family: 'Space Mono', monospace; }
 
   .i-ico{ vertical-align: -3px; margin-right: 5px; flex-shrink: 0; }
-  .pill .i-ico{ vertical-align: -2px; margin-right: 3px; width: 12px; height: 12px; }
+  .stamp .i-ico{ vertical-align: -2px; margin-right: 3px; width: 11px; height: 11px; }
 
-  .page{
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2.5rem 1.1rem 0;
-  }
+  .page{ max-width: 900px; margin: 0 auto; padding: 2rem 1.1rem 0; }
 
-  /* --- Header / masthead --- */
+  /* ============ Masthead — a soft floating bar ============ */
   .masthead{
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 14px 32px -18px var(--shadow);
+    padding: 0.9rem 1.3rem;
+    margin-bottom: 1.6rem;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    border-bottom: 2px solid var(--ink);
-    padding-bottom: 1rem;
-    margin-bottom: 0.5rem;
     gap: 1rem;
     flex-wrap: wrap;
   }
   .brand-block{ display:flex; align-items:center; gap:0.85rem; }
-  .brand-mark{
-    width: 42px; height: 42px;
+
+  .seal{
+    width: 48px; height: 48px;
     flex-shrink: 0;
-    border: 1.5px solid var(--ink);
     border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--indigo));
     display:flex; align-items:center; justify-content:center;
-    background: #fff;
-    color: var(--accent-dark);
-    box-shadow: 0 4px 10px -4px var(--shadow);
+    color: #fff;
+    transform: rotate(-6deg);
+    box-shadow: 0 8px 16px -6px var(--shadow);
   }
-  .brand-text{ display:flex; flex-direction:column; gap:0.15rem; }
+
+  .brand-text{ display:flex; flex-direction:column; gap:0.1rem; }
   .brand{
-    font-size: clamp(1.4rem, 4.5vw, 1.85rem);
+    font-size: clamp(1.4rem, 4.2vw, 1.75rem);
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.01em;
     margin:0;
     color: var(--ink);
-    line-height: 1.15;
+    line-height: 1.1;
   }
   .brand small{
     display:block;
-    font-family:'IBM Plex Sans';
-    font-size: 0.7rem;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+    font-family:'Plus Jakarta Sans';
+    font-style: normal;
+    font-size: 0.72rem;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    color: var(--ink-faint);
     font-weight: 500;
-    margin-top: 2px;
+    margin-top: 3px;
   }
   .today-stamp{
-    font-family:'IBM Plex Mono';
-    font-size: 0.72rem;
-    color: var(--ink-soft);
+    font-family:'Space Mono';
+    font-size: 0.68rem;
+    color: var(--ink-faint);
   }
 
-  .header-controls{
-    display:flex;
-    align-items:center;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
+  .header-controls{ display:flex; align-items:center; gap: 1rem; flex-wrap: wrap; }
 
-  .tab-nav{ display:flex; gap: 0.5rem; }
+  /* soft pill tab navigation */
+  .tab-nav{ display:flex; gap: 0.25rem; align-items:center; background: var(--card-soft); padding: 0.3rem; border-radius: 999px; }
   .tab-btn{
+    position: relative;
     background: transparent;
-    border: 1.5px solid var(--ink);
-    color: var(--ink);
-    font-family: 'IBM Plex Mono';
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    border: none;
+    color: var(--ink-soft);
+    font-family: 'Plus Jakarta Sans';
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.01em;
     padding: 0.5rem 1.15rem;
-    border-radius: 2px;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    border-radius: 999px;
+    transition: background 0.18s ease, color 0.18s ease;
   }
-  .tab-btn:hover:not(.active){ background: var(--paper-dark); }
-  .tab-btn.active{ background: var(--ink); color: var(--paper); }
+  .tab-btn:hover:not(.active){ background: rgba(255,255,255,0.7); color: var(--ink); }
+  .tab-btn.active{ background: var(--accent); color: #fff; box-shadow: 0 6px 14px -6px var(--shadow); }
 
-  .header-actions{ display:flex; align-items:center; gap: 0.6rem; }
-  .user-chip{
-    font-family:'IBM Plex Mono'; font-size: 0.68rem; color: var(--ink-soft);
-    letter-spacing: 0.03em; white-space: nowrap;
-  }
+  .header-actions{ display:flex; align-items:center; gap: 0.55rem; }
+  .user-chip{ font-family:'Space Mono'; font-size: 0.66rem; color: var(--ink-faint); letter-spacing: 0.02em; white-space: nowrap; }
   .logout-btn{ font-size: 0.72rem; padding: 0.5rem 1rem; }
 
   .gear-btn{
-    background: #fff;
-    border: 1.5px solid var(--ink);
-    border-radius: 2px;
+    background: var(--card-soft);
+    border: none;
+    border-radius: 50%;
     width: 36px; height: 36px;
     display:flex; align-items:center; justify-content:center;
-    color: var(--ink);
+    color: var(--ink-soft);
     cursor: pointer;
     flex-shrink: 0;
+    transition: background 0.18s ease, color 0.18s ease;
   }
-  .gear-btn:hover, .gear-btn.active{ background: var(--ink); color: var(--paper); }
-  .gear-btn svg{ width: 16px; height: 16px; }
+  .gear-btn:hover, .gear-btn.active{ background: var(--indigo); color:#fff; }
+  .gear-btn svg{ width: 15px; height: 15px; }
 
-  /* --- Streak dots --- */
-  .streak{ display:flex; gap: 8px; align-items:center; margin: 1.4rem 0 2rem; flex-wrap: wrap; }
+  /* ============ Bubble streak tracker ============ */
+  .streak-wrap{ margin: 1.6rem 0 2rem; background: var(--card); border-radius: var(--radius-md); padding: 1.1rem 1.2rem 0.9rem; box-shadow: 0 10px 24px -16px var(--shadow); }
   .streak-label{
-    font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--ink-soft); margin-right: 6px;
+    font-size: 0.72rem; letter-spacing: 0.02em;
+    color: var(--ink-soft); font-family:'Plus Jakarta Sans'; font-weight: 600; margin-bottom: 0.7rem; display:block;
   }
-  .dot{
-    width: 11px; height: 11px; border-radius: 50%;
-    border: 1.5px solid var(--ink); background: transparent; position: relative;
+  .vine{ position: relative; display:flex; justify-content:space-between; align-items:flex-end; height: 46px; }
+  .vine::before{
+    content:''; position:absolute; left:6px; right:6px; bottom: 15px; height: 2px;
+    background: repeating-linear-gradient(90deg, var(--rule) 0 5px, transparent 5px 9px);
   }
-  .dot.filled{ background: var(--accent); border-color: var(--accent); }
-  .dot .dow{
-    position:absolute; top: 14px; left:50%; transform:translateX(-50%);
-    font-size: 0.6rem; color: var(--ink-soft); font-family:'IBM Plex Mono';
-  }
+  .leaf-mark{ position:relative; display:flex; flex-direction:column-reverse; align-items:center; gap:5px; }
+  .leaf-mark svg{ width:12px; height:12px; padding: 6px; border-radius: 50%; background: var(--rule-soft); color: transparent; box-sizing: content-box; transition: background 0.2s ease, transform 0.2s ease; }
+  .leaf-mark.filled svg{ background: linear-gradient(135deg, var(--accent), var(--indigo)); color: #fff; fill: #fff; box-shadow: 0 6px 12px -5px var(--shadow); }
+  .leaf-mark .dow{ font-size: 0.62rem; color: var(--ink-faint); font-family:'Space Mono'; }
 
-  /* --- Notebook block --- */
+  /* ============ Day card ============ */
   .leaf{
     background: var(--card);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 1.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 2.1rem 1.6rem 1.7rem;
     margin-bottom: 2rem;
     position: relative;
-    box-shadow: 0 12px 28px -14px var(--shadow), 0 1px 0 rgba(255,255,255,0.6) inset;
+    box-shadow: 0 16px 36px -18px var(--shadow);
   }
-  .leaf::before{
-    content: attr(data-tab);
-    position:absolute;
-    top: -0.65rem; left: 1.25rem;
-    background: var(--paper);
-    padding: 0 0.6rem;
-    font-family:'IBM Plex Mono';
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+  .specimen-tag{
+    position:absolute; top: -0.8rem; left: 1.4rem;
+    background: linear-gradient(120deg, var(--pop), var(--pop-dark));
+    color: #fff;
+    padding: 0.32rem 0.9rem;
+    border-radius: 999px;
+    font-family:'Plus Jakarta Sans';
+    font-weight: 700;
+    font-size: 0.68rem;
+    letter-spacing: 0.02em;
+    transform: rotate(-2deg);
+    box-shadow: 0 6px 14px -5px var(--shadow);
   }
 
   .field-section-title{
-    font-family:'IBM Plex Mono'; font-size: 0.68rem; letter-spacing:0.1em;
-    text-transform:uppercase; color: var(--accent-dark); margin: 1.3rem 0 0.75rem;
-    border-bottom: 1px dashed var(--rule); padding-bottom: 0.4rem;
+    font-family:'Plus Jakarta Sans'; font-size: 0.86rem; font-weight: 700; letter-spacing:0;
+    text-transform:none; color: var(--ink); margin: 1.7rem 0 1rem;
+    padding: 0.5rem 0.2rem 0.5rem 0;
     display:flex; align-items:center;
+    border-bottom: none;
+    position: relative;
   }
+  .field-section-title::after{ content: none; }
   .field-section-title:first-of-type{ margin-top: 0; }
+  .field-section-title .idx{
+    color: var(--accent-dark); background: var(--accent-soft);
+    margin-right: 0.6rem; font-style:normal; font-family:'Space Mono'; font-size:0.62rem;
+    padding: 0.22rem 0.55rem; border-radius: 999px; letter-spacing: 0.03em;
+  }
+  #metricFieldsRow .field-section-title:nth-of-type(1) .idx{ color: var(--accent-dark); background: var(--accent-soft); }
+  #metricFieldsRow .field-section-title:nth-of-type(1) .i-ico{ color: var(--accent); }
+  #metricFieldsRow .field-section-title:nth-of-type(2) .idx{ color: var(--indigo-dark); background: var(--indigo-soft); }
+  #metricFieldsRow .field-section-title:nth-of-type(2) .i-ico{ color: var(--indigo); }
+  #metricFieldsRow .field-section-title:nth-of-type(3) .idx{ color: var(--pop-dark); background: #FFE9E2; }
+  #metricFieldsRow .field-section-title:nth-of-type(3) .i-ico{ color: var(--pop-dark); }
+  #metricFieldsRow .field-section-title:nth-of-type(4) .idx{ color: var(--ink-soft); background: var(--card-soft); }
+  #metricFieldsRow .field-section-title:nth-of-type(4) .i-ico{ color: var(--ink-soft); }
+  #textFieldsCol .field-section-title .idx{ color: var(--ink-soft); background: var(--card-soft); }
 
   label.form-label{
-    font-family:'IBM Plex Mono';
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
-    margin-bottom: 0.35rem;
-    display:flex;
-    align-items:center;
+    font-family:'Plus Jakarta Sans'; font-size: 0.76rem; font-weight: 600; letter-spacing: 0; text-transform: none;
+    color: var(--ink-soft); margin-bottom: 0.4rem; display:flex; align-items:center;
   }
 
   .form-control, .form-select{
-    background: var(--paper);
-    border: none;
-    border-bottom: 1.5px solid var(--ink);
-    border-radius: 0;
-    padding: 0.5rem 0.25rem;
+    background: var(--card-soft);
+    border: 1.5px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 0.55rem 0.75rem;
     color: var(--ink);
-    font-family:'IBM Plex Sans';
+    font-family:'Plus Jakarta Sans';
   }
   .form-control:focus, .form-select:focus{
-    background: var(--paper);
-    box-shadow: none;
-    border-bottom: 2px solid var(--accent);
-    color: var(--ink);
+    background: #fff; box-shadow: 0 0 0 3px var(--accent-soft);
+    border: 1.5px solid var(--accent); color: var(--ink);
   }
-  .form-control::placeholder{ color: #9AA79E; }
+  .form-control::placeholder{ color: var(--ink-faint); }
 
-  .input-suffix{ font-family:'IBM Plex Mono'; font-size: 0.78rem; color: var(--ink-soft); }
+  .input-suffix{ font-family:'Space Mono'; font-size: 0.76rem; color: var(--ink-faint); }
 
   .btn-ink{
-    background: var(--ink);
-    color: var(--paper);
-    border-radius: 2px;
-    font-family:'IBM Plex Mono';
-    font-size: 0.8rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.6rem 1.4rem;
-    border: 1px solid var(--ink);
-    transition: background 0.15s ease, transform 0.1s ease;
+    background: linear-gradient(120deg, var(--accent), var(--accent-dark));
+    color: #fff;
+    border-radius: 999px;
+    font-family:'Plus Jakarta Sans'; font-weight: 700; font-size: 0.82rem; letter-spacing: 0;
+    padding: 0.68rem 1.7rem;
+    border: none;
+    box-shadow: 0 10px 20px -10px var(--shadow);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  .btn-ink:hover{ background: var(--accent-dark); border-color: var(--accent-dark); color:#fff; }
+  .btn-ink:hover{ transform: translateY(-1px); box-shadow: 0 14px 24px -10px var(--shadow); color:#fff; }
   .btn-ink:active{ transform: translateY(1px); }
-  .btn-ink:disabled{ opacity: 0.6; }
+  .btn-ink:disabled{ opacity: 0.6; transform:none; }
 
   .btn-outline-ink{
-    background: transparent;
-    color: var(--ink);
-    border-radius: 2px;
-    font-family:'IBM Plex Mono';
-    font-size: 0.75rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 0.5rem 1.1rem;
-    border: 1px solid var(--ink);
+    background: var(--card-soft); color: var(--ink);
+    border-radius: 999px;
+    font-family:'Plus Jakarta Sans'; font-weight: 600; font-size: 0.78rem; letter-spacing: 0;
+    padding: 0.58rem 1.2rem;
+    border: none;
   }
-  .btn-outline-ink:hover{ background: var(--paper-dark); }
+  .btn-outline-ink:hover{ background: var(--indigo-soft); color: var(--indigo-dark); }
 
-  .status-line{
-    font-family:'IBM Plex Mono';
-    font-size: 0.78rem;
-    margin-top: 0.75rem;
-    min-height: 1.2rem;
-  }
+  .status-line{ font-family:'Plus Jakarta Sans'; font-weight: 600; font-size: 0.8rem; margin-top: 0.75rem; min-height: 1.2rem; }
   .status-line.ok{ color: var(--ok); }
-  .status-line.err{ color: var(--accent-dark); }
+  .status-line.err{ color: var(--danger); }
 
-  /* --- Tab panels --- */
   .tab-panel{ display:none; }
   .tab-panel.active{ display:block; }
 
-  /* --- Ledger --- */
-  .ledger-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 0.75rem; flex-wrap:wrap; gap:0.5rem; }
-  .ledger-head h2{ font-size: 1.15rem; font-weight:600; margin:0; }
+  /* ============ Ledger ============ */
+  .ledger-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 0.9rem; flex-wrap:wrap; gap:0.5rem; }
+  .ledger-head h2{ font-size: 1.4rem; font-weight:600; font-family:'Fredoka'; margin:0; }
   .refresh-link{
-    font-family:'IBM Plex Mono'; font-size: 0.72rem; letter-spacing:0.08em;
-    text-transform:uppercase; color: var(--ink-soft); text-decoration:none;
-    border-bottom: 1px dashed var(--ink-soft); cursor:pointer;
+    font-family:'Plus Jakarta Sans'; font-weight:600; font-size: 0.78rem; letter-spacing:0; text-transform:none;
+    color: var(--accent-dark); text-decoration:none; border-bottom: none; cursor:pointer;
+    background: var(--accent-soft); padding: 0.4rem 0.85rem; border-radius: 999px;
   }
-  .refresh-link:hover{ color: var(--accent-dark); border-color: var(--accent-dark); }
+  .refresh-link:hover{ color: #fff; background: var(--accent); }
 
-  .pill{
-    display:inline-flex;
-    align-items:center;
-    padding: 0.18rem 0.55rem;
+  .stamp{
+    display:inline-flex; align-items:center;
+    padding: 0.26rem 0.62rem;
+    font-family: 'Space Mono'; font-size: 0.7rem; font-weight: 500;
+    white-space: nowrap;
+    border: 1.5px solid transparent;
     border-radius: 999px;
-    font-family: 'IBM Plex Mono';
-    font-size: 0.76rem;
-    white-space: nowrap;
-    border: 1px solid transparent;
+    background: #fff;
   }
-  .pill-fine{ background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
-  .pill-low{ background: var(--low-bg); color: var(--low); border-color: var(--low); }
-  .pill-danger{ background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
-  .pill-neutral{ background: var(--paper-dark); color: var(--ink-soft); border-color: var(--rule); }
-  .pill-none{ color: var(--ink-soft); border: none; padding-left: 0; }
+  .stamp-fine{ border-color: var(--ok); color: var(--ok); }
+  .stamp-low{ border-color: var(--low); color: var(--low); }
+  .stamp-danger{ border-color: var(--danger); color: var(--danger); }
+  .stamp-neutral{ border-color: var(--rule); color: var(--ink-soft); }
+  .stamp-none{ color: var(--ink-faint); border: none; padding-left: 0.2rem; background: transparent; }
 
-  /* --- Bootstrap Table theming to match the notebook look --- */
-  .bootstrap-table{ font-family:'IBM Plex Sans'; }
+  .bootstrap-table{ font-family:'Plus Jakarta Sans'; }
   .fixed-table-toolbar .search input{
-    background: var(--paper);
-    border: none;
-    border-bottom: 1.5px solid var(--ink);
-    border-radius: 0;
-    box-shadow: none;
-    font-family:'IBM Plex Sans';
+    background: #fff; border: 1.5px solid var(--rule);
+    border-radius: 999px; box-shadow: none; font-family:'Plus Jakarta Sans'; padding: 0.45rem 1rem;
   }
-  .fixed-table-toolbar .search input:focus{ border-bottom: 2px solid var(--accent); }
+  .fixed-table-toolbar .search input:focus{ border-color: var(--indigo); box-shadow: 0 0 0 3px var(--indigo-soft); }
   .fixed-table-container{
-    border: 1px solid var(--rule);
-    background: var(--card);
-    box-shadow: 0 12px 28px -14px var(--shadow);
-    border-radius: 3px;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    overflow: hidden;
+    padding-bottom: 0.4rem;
   }
-  .fixed-table-body{ overflow-x: auto; }
-  .fixed-table-container table.table{ margin-bottom:0; min-width: 1500px; }
+  .fixed-table-body{ overflow-x: auto; padding: 0.2rem 0.1rem 0.6rem; }
+  .fixed-table-container table.table{ margin-bottom:0; min-width: 1500px; border-collapse: separate; border-spacing: 0 10px; }
+
+  .table thead{ position: sticky; top: 0; z-index: 2; }
   .table thead th{
-    font-family:'IBM Plex Mono' !important;
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--ink-soft) !important;
-    background: var(--paper-dark) !important;
-    border-bottom: 1.5px solid var(--ink) !important;
-    font-weight:500;
-    white-space: nowrap;
-    vertical-align: middle;
+    font-family:'Space Mono' !important; font-size: 0.64rem; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--accent-dark) !important; background: var(--bg) !important;
+    border: none !important; border-bottom: 2px solid var(--accent) !important;
+    font-weight:600; white-space: nowrap; vertical-align: middle; padding-bottom: 0.6rem !important;
   }
   .table th .th-inner{ display:flex; align-items:center; }
-  .table td{
-    border-bottom: 1px dashed var(--rule) !important;
-    font-size: 0.86rem;
-    vertical-align: middle;
-    background: transparent !important;
-    max-width: 220px;
+  .table tbody tr td{
+    border: none !important; font-size: 0.86rem; vertical-align: middle;
+    background: var(--card) !important; max-width: 220px;
+    box-shadow: 0 6px 16px -11px var(--shadow);
+    padding-top: 0.75rem !important; padding-bottom: 0.75rem !important;
   }
+  .table tbody tr:nth-child(even) td{ background: var(--card-soft) !important; }
+  .table tbody tr:hover td{ background: var(--indigo-soft) !important; }
+  .table tbody tr td:first-child{ border-top-left-radius: 14px !important; border-bottom-left-radius: 14px !important; padding-left: 1rem !important; }
+  .table tbody tr td:last-child{ border-top-right-radius: 14px !important; border-bottom-right-radius: 14px !important; padding-right: 1rem !important; }
   .table td.text-cell{ white-space: nowrap; overflow:hidden; text-overflow: ellipsis; max-width: 180px; }
-  .table td.date-cell{ font-family:'IBM Plex Mono'; font-size:0.78rem; white-space:nowrap; }
-  .fixed-table-pagination .page-link{
-    color: var(--ink);
-    border-color: var(--rule);
-    font-family:'IBM Plex Mono';
-    font-size: 0.78rem;
+  .text-cell-trunc{
+    position: relative;
+    display: inline-block;
+    border-bottom: 1.5px dotted var(--ink-faint);
+    cursor: help;
+    padding-bottom: 1px;
   }
-  .fixed-table-pagination .page-item.active .page-link{
+  .text-cell-trunc::after{
+    content: attr(title);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%) translateY(4px);
     background: var(--ink);
-    border-color: var(--ink);
-    color: var(--paper);
+    color: #fff;
+    font-family: 'Plus Jakarta Sans';
+    font-size: 0.74rem;
+    font-weight: 500;
+    line-height: 1.45;
+    white-space: normal;
+    width: max-content;
+    max-width: 240px;
+    padding: 0.5rem 0.7rem;
+    border-radius: 12px;
+    box-shadow: 0 14px 28px -12px rgba(20, 35, 35, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 50;
   }
-  .fixed-table-pagination .page-item.disabled .page-link{ background: transparent; }
-  .fixed-table-toolbar .form-control{ border-radius:0; }
-  .bs-bars, .search, .columns{ font-family:'IBM Plex Mono'; font-size:0.76rem; }
-  .no-records-found{ text-align:center; color: var(--ink-soft); font-style: italic; }
+  .text-cell-trunc::before{
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 4px);
+    transform: translateX(-50%) translateY(4px);
+    border: 6px solid transparent;
+    border-top-color: var(--ink);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 50;
+  }
+  .text-cell-trunc:hover::after, .text-cell-trunc:focus::after,
+  .text-cell-trunc:hover::before, .text-cell-trunc:focus::before{
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+  .table td.date-cell{
+    font-family:'Space Mono'; font-weight: 700; font-size:0.76rem; white-space:nowrap;
+    color: var(--accent-dark); background: var(--accent-soft); padding: 0.25rem 0.6rem; border-radius: 999px; display:inline-block;
+  }
+  .fixed-table-pagination .page-link{ color: var(--ink-soft); border: 1.5px solid var(--rule); background: #fff; font-family:'Plus Jakarta Sans'; font-weight:600; font-size: 0.8rem; border-radius: 999px; margin: 0 2px; }
+  .fixed-table-pagination .page-item.active .page-link{ background: var(--indigo); border-color: var(--indigo); color: #fff; }
+  .fixed-table-pagination .page-item.disabled .page-link{ background: transparent; border-color: transparent; }
+  .fixed-table-toolbar .form-control{ border-radius:999px; }
+  .bs-bars, .search, .columns{ font-family:'Plus Jakarta Sans'; font-size:0.78rem; }
+  .no-records-found{ text-align:center; color: var(--ink-faint); font-style: normal; }
 
-  /* --- Bootstrap Datepicker theming --- */
   .datepicker{
-    font-family:'IBM Plex Sans';
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 2px;
-    padding: 0.4rem;
+    font-family:'Plus Jakarta Sans'; background: #fff; border: none; border-radius: var(--radius-md); padding: 0.5rem;
+    box-shadow: 0 16px 36px -18px var(--shadow);
   }
   .datepicker table tr td.active.active, .datepicker table tr td.active:hover.active{
-    background: var(--accent) !important;
-    background-image: none !important;
-    color: #fff;
+    background: var(--accent) !important; background-image: none !important; color: #fff; border-radius: 999px;
   }
   .datepicker table tr td.today, .datepicker table tr td.today:hover{
-    background: var(--paper-dark) !important;
-    background-image: none !important;
-    color: var(--ink);
-    border-color: var(--rule);
+    background: var(--accent-soft) !important; background-image: none !important; color: var(--accent-dark); border-radius: 999px;
   }
-  .datepicker table tr td:hover, .datepicker table tr td span:hover{ background: var(--paper-dark); }
-  .datepicker .datepicker-switch, .datepicker .prev, .datepicker .next{ font-family:'IBM Plex Mono'; }
+  .datepicker table tr td:hover, .datepicker table tr td span:hover{ background: var(--card-soft); border-radius: 999px; }
+  .datepicker .datepicker-switch, .datepicker .prev, .datepicker .next{ font-family:'Plus Jakarta Sans'; font-weight:600; }
 
-  /* --- Advanced panel --- */
+  /* ============ Advanced panel ============ */
   .adv-panel{ display:none; margin-bottom: 2rem; }
   .adv-panel.open{ display:block; }
   .adv-section-title{
-    font-family:'IBM Plex Mono'; font-size: 0.7rem; letter-spacing:0.1em;
-    text-transform:uppercase; color: var(--accent-dark); margin: 1.4rem 0 0.75rem;
-    border-bottom: 1px dashed var(--rule); padding-bottom: 0.4rem;
+    font-family:'Plus Jakarta Sans'; font-size: 0.85rem; font-weight:700; letter-spacing:0; text-transform:none;
+    color: var(--ink); margin: 1.4rem 0 0.9rem; border-bottom: none; padding-bottom: 0;
   }
   .adv-section-title:first-of-type{ margin-top: 0; }
-  .adv-grid{
-    display:grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
+  .adv-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   .adv-metric-card{
-    background: var(--paper);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 0.85rem 0.9rem 0.55rem;
+    background: var(--card-soft); border: none; border-left: 4px solid var(--indigo);
+    border-radius: var(--radius-sm); padding: 0.9rem 1rem 0.6rem;
   }
   .adv-metric-label{
-    font-family:'IBM Plex Mono'; font-size: 0.7rem; letter-spacing:0.06em;
-    text-transform:uppercase; color: var(--ink); margin-bottom: 0.5rem; display:flex; align-items:center;
+    font-family:'Plus Jakarta Sans'; font-size: 0.76rem; font-weight:700; letter-spacing:0; text-transform:none;
+    color: var(--ink); margin-bottom: 0.55rem; display:flex; align-items:center;
   }
   .adv-field{ margin-bottom: 0.6rem; }
-  .adv-field label{
-    font-size: 0.66rem; color: var(--ink-soft); display:block; margin-bottom: 0.2rem;
-  }
+  .adv-field label{ font-size: 0.68rem; color: var(--ink-faint); display:block; margin-bottom: 0.25rem; }
   .adv-row{ display:flex; gap:1.25rem; flex-wrap:wrap; align-items:flex-end; }
   .adv-row .adv-field{ min-width: 160px; flex: 1; }
-  .adv-note{
-    font-size: 0.78rem; color: var(--ink-soft); margin-top: 1rem; line-height: 1.5;
-  }
+  .adv-note{ font-size: 0.8rem; color: var(--ink-faint); margin-top: 1.1rem; line-height: 1.6; background: var(--card-soft); border-radius: var(--radius-sm); padding: 0.9rem 1.1rem; }
   @media (max-width: 620px){ .adv-grid{ grid-template-columns: 1fr; } }
-  @media (max-width: 520px){ .page{ padding-top: 2rem; } }
+  @media (max-width: 520px){ .page{ padding-top: 1.4rem; } }
   @media (prefers-reduced-motion: reduce){ .btn-ink{ transition:none; } }
 
-  /* --- Lock / login screens --- */
+  /* ============ Lock / login — soft bubble card ============ */
   .lock-screen{
-    position: fixed; inset: 0; background: var(--paper);
-    background-image: linear-gradient(var(--paper-dark) 1px, transparent 1px);
-    background-size: 100% 2.1rem;
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(var(--bg-dot) 1.6px, transparent 1.6px),
+      var(--bg);
+    background-size: 22px 22px, 100%;
     display: flex; align-items: center; justify-content: center;
     padding: 1.25rem; z-index: 10;
   }
   .lock-card{
     max-width: 380px; width: 100%;
     background: var(--card);
-    border: 1px solid var(--rule);
-    border-radius: 3px;
-    padding: 2.1rem 1.75rem;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 2.4rem 1.9rem 2.1rem;
     text-align: center;
-    box-shadow: 0 20px 44px -18px var(--shadow);
+    position: relative;
+    box-shadow: 0 24px 52px -20px var(--shadow);
   }
+  .lock-card::before{ content: none; }
   .lock-icon-circle{
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    border: 1.5px solid var(--ink);
-    background: #fff;
+    width: 58px; height: 58px; border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--accent), var(--indigo));
     display:flex; align-items:center; justify-content:center;
-    margin: 0 auto 1rem;
-    color: var(--accent-dark);
-    box-shadow: 0 6px 14px -6px var(--shadow);
+    margin: 0 auto 1.2rem; position: relative; z-index: 1;
+    color: #fff;
+    box-shadow: 0 10px 22px -8px var(--shadow);
   }
   .lock-eyebrow{
-    font-family: 'IBM Plex Mono'; font-size: 0.7rem; letter-spacing: 0.14em;
-    text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.5rem;
+    font-family: 'Space Mono'; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent-dark); margin-bottom: 0.5rem;
   }
-  .lock-title{ font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--ink); }
-  .lock-copy{ font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 1.5rem; line-height: 1.5; }
+  .lock-title{ font-family: 'Fredoka', sans-serif; font-style: normal; font-size: 1.6rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--ink); }
+  .lock-copy{ font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 1.6rem; line-height: 1.55; }
   .lock-input{ text-align: center; margin-bottom: 1rem; }
   .lock-btn{ width: 100%; }
   .lock-screen .status-line{ margin-top: 1rem; }
 
   .setup-note{
-    font-size: 0.82rem;
-    color: var(--ink-soft);
-    border-left: 3px solid var(--rule);
-    padding-left: 0.9rem;
-    margin-top: 2.5rem;
+    font-size: 0.82rem; color: var(--ink-faint);
+    border-left: none; padding: 0.9rem 1.1rem; margin-top: 2.5rem;
+    background: var(--card); border-radius: var(--radius-md);
   }
-  .setup-note code{ background: var(--paper-dark); padding: 0.1rem 0.35rem; border-radius: 2px; color: var(--ink); }
+  .setup-note code{ background: var(--card-soft); padding: 0.15rem 0.4rem; border-radius: 6px; color: var(--ink); }
 </style>
 </head>
 <body>
@@ -464,9 +495,9 @@
 <div id="loginScreen" class="lock-screen">
   <div class="lock-card">
     <div class="lock-icon-circle" id="loginIconHolder"></div>
-    <p class="lock-eyebrow">Daybook</p>
-    <h1 class="lock-title">Sign in</h1>
-    <p class="lock-copy">Enter the username and password set up for this ledger.</p>
+    <p class="lock-eyebrow">daybook</p>
+    <h1 class="lock-title">Welcome back</h1>
+    <p class="lock-copy">Sign in with the username and password set up for this journal.</p>
     <form id="loginForm">
       <input type="text" id="loginUser" class="form-control lock-input" placeholder="Username" autocomplete="username" required>
       <input type="password" id="loginPass" class="form-control lock-input" placeholder="Password" autocomplete="current-password" required>
@@ -480,9 +511,9 @@
 <div id="lockScreen" class="lock-screen" hidden>
   <div class="lock-card">
     <div class="lock-icon-circle" id="lockIconHolder"></div>
-    <p class="lock-eyebrow">Daybook</p>
-    <h1 class="lock-title">Enter the ledger key</h1>
-    <p class="lock-copy">This page is shared between two people only. Ask whoever set it up for the access code.</p>
+    <p class="lock-eyebrow">daybook</p>
+    <h1 class="lock-title">One more little key</h1>
+    <p class="lock-copy">This book is just for the two of you. Enter your shared code to peek inside.</p>
     <form id="lockForm">
       <input type="password" id="lockInput" class="form-control lock-input" placeholder="Access code" autocomplete="off" required>
       <button type="submit" class="btn btn-ink lock-btn">Unlock</button>
@@ -495,9 +526,9 @@
 
   <header class="masthead">
     <div class="brand-block">
-      <span class="brand-mark" id="brandMarkHolder"></span>
+      <span class="seal" id="brandMarkHolder"></span>
       <div class="brand-text">
-        <h1 class="brand">Daybook<small>a small ledger of small habits</small></h1>
+        <h1 class="brand">Daybook<small>little days, kept softly</small></h1>
         <span class="today-stamp" id="todayStamp"></span>
       </div>
     </div>
@@ -509,7 +540,7 @@
       <div class="header-actions">
         <span class="user-chip" id="userChip"></span>
         <button type="button" class="gear-btn" id="advToggle" title="Advanced settings" aria-label="Advanced settings">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg>
         </button>
         <button type="button" class="btn btn-outline-ink logout-btn" id="logoutBtn">Logout</button>
       </div>
@@ -517,7 +548,8 @@
   </header>
 
   <!-- Advanced settings: display-only thresholds + view options for this page -->
-  <section class="leaf adv-panel" id="advPanel" data-tab="Advanced options">
+  <section class="leaf adv-panel" id="advPanel">
+    <span class="specimen-tag">Fine print &amp; settings</span>
 
     <p class="adv-section-title">Display thresholds</p>
     <div id="advThresholdsGrid"></div>
@@ -564,11 +596,13 @@
   <!-- Daybook tab: streak + entry form -->
   <div class="tab-panel active" id="tab-daybook">
 
-    <div class="streak" id="streak">
+    <div class="streak-wrap">
       <span class="streak-label" id="streakLabel">Last 7 days</span>
+      <div class="vine" id="streak"></div>
     </div>
 
-    <section class="leaf" data-tab="Today's entry">
+    <section class="leaf">
+      <span class="specimen-tag">✏️ Today's entry</span>
       <form id="logForm" novalidate>
         <div class="row g-3 mb-1">
           <div class="col-12 col-sm-6">
@@ -637,12 +671,14 @@
     notebook:  '<rect x="4.5" y="3.5" width="15" height="17" rx="1.4"/><line x1="8" y1="3.5" x2="8" y2="20.5"/><line x1="11.5" y1="7.5" x2="17" y2="7.5"/><line x1="11.5" y1="11" x2="17" y2="11"/>',
     lock:      '<rect x="5" y="11" width="14" height="9" rx="1.6"/><path d="M8 11V7.3A4 4 0 0 1 16 7.3V11"/>',
     user:      '<circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20C4.8 15.8 7.9 13.6 12 13.6C16.1 13.6 19.2 15.8 19.2 20"/>',
-    calendar:  '<rect x="3.5" y="5" width="17" height="15" rx="1.5"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="8" y1="3" x2="8" y2="6.5"/><line x1="16" y1="3" x2="16" y2="6.5"/>'
+    calendar:  '<rect x="3.5" y="5" width="17" height="15" rx="1.5"/><line x1="3.5" y1="9.5" x2="20.5" y2="9.5"/><line x1="8" y1="3" x2="8" y2="6.5"/><line x1="16" y1="3" x2="16" y2="6.5"/>',
+    fern:      '<path d="M12 3L13.6 9L19.5 10.5L13.6 12L12 18L10.4 12L4.5 10.5L10.4 9L12 3Z"/>',
+    leaf:      '<path d="M12 20C12 20 4.5 15 4.5 9.8C4.5 7 6.8 4.7 9.6 4.7C11 4.7 12 5.6 12 5.6C12 5.6 13 4.7 14.4 4.7C17.2 4.7 19.5 7 19.5 9.8C19.5 15 12 20 12 20Z" fill="currentColor" stroke="none"/>'
   };
   function svgIcon(name, size){
     size = size || 16;
     const inner = ICON_PATHS[name] || '';
-    return '<svg class="i-ico" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
+    return '<svg class="i-ico" width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + inner + '</svg>';
   }
 
   /* ---------------- Field configuration ---------------- */
@@ -667,10 +703,10 @@
     { key:'notes',           label:'Notes',                 icon:'notebook',  placeholder:'anything else worth remembering about today', formType:'textarea' }
   ];
   const GROUP_META = {
-    body:       { label:'Body & Rest',      icon:'droplet' },
-    mind:       { label:'Mind',             icon:'smile' },
-    connection: { label:'Connection & Day', icon:'heart' },
-    digital:    { label:'Digital & Finance',icon:'monitor' }
+    body:       { label:'Body & Rest',      icon:'droplet', idx:'01' },
+    mind:       { label:'Mind',             icon:'smile',   idx:'02' },
+    connection: { label:'Connection & Day', icon:'heart',   idx:'03' },
+    digital:    { label:'Digital & Finance',icon:'monitor', idx:'04' }
   };
   const GROUP_ORDER = ['body','mind','connection','digital'];
 
@@ -693,7 +729,7 @@
   const refreshLink = document.getElementById('refreshLink');
   const userChip = document.getElementById('userChip');
 
-  document.getElementById('brandMarkHolder').innerHTML = svgIcon('notebook', 20);
+  document.getElementById('brandMarkHolder').innerHTML = svgIcon('fern', 20);
   document.getElementById('loginIconHolder').innerHTML = svgIcon('user', 24);
   document.getElementById('lockIconHolder').innerHTML = svgIcon('lock', 24);
 
@@ -751,7 +787,7 @@
   }
 
   function renderStreak(entries){
-    streakEl.querySelectorAll('.dot').forEach(d => d.remove());
+    streakEl.querySelectorAll('.leaf-mark').forEach(d => d.remove());
     streakLabel.textContent = 'Last ' + streakWindow + ' days';
     const loggedDates = new Set(entries.map(e => e.date));
     const today = new Date();
@@ -760,14 +796,11 @@
       d.setDate(d.getDate() - i);
       const iso = d.toISOString().slice(0,10);
       const dow = d.toLocaleDateString('en-GB', { weekday:'narrow' });
-      const dot = document.createElement('span');
-      dot.className = 'dot' + (loggedDates.has(iso) ? ' filled' : '');
-      dot.title = iso;
-      const label = document.createElement('span');
-      label.className = 'dow';
-      label.textContent = dow;
-      dot.appendChild(label);
-      streakEl.appendChild(dot);
+      const mark = document.createElement('span');
+      mark.className = 'leaf-mark' + (loggedDates.has(iso) ? ' filled' : '');
+      mark.title = iso;
+      mark.innerHTML = svgIcon('leaf', 16) + '<span class="dow">' + dow + '</span>';
+      streakEl.appendChild(mark);
     }
   }
 
@@ -791,27 +824,31 @@
     return 'danger';
   }
 
-  function metricPill(value, m){
+  function metricStamp(value, m){
     if(value === '' || value === null || value === undefined){
-      return '<span class="pill pill-none">—</span>';
+      return '<span class="stamp stamp-none">—</span>';
     }
     const cfg = thresholds[m.key];
     const status = statusFor(value, cfg);
-    const cls = status === 'fine' ? 'pill-fine' : status === 'low' ? 'pill-low' : status === 'danger' ? 'pill-danger' : 'pill-neutral';
-    return '<span class="pill ' + cls + '">' + svgIcon(m.icon, 12) + escapeHtml(String(value)) + (m.unit || '') + '</span>';
+    const cls = status === 'fine' ? 'stamp-fine' : status === 'low' ? 'stamp-low' : status === 'danger' ? 'stamp-danger' : 'stamp-neutral';
+    return '<span class="stamp ' + cls + '">' + svgIcon(m.icon, 12) + escapeHtml(String(value)) + (m.unit || '') + '</span>';
   }
 
-  function booleanPill(value){
+  function booleanStamp(value){
     if(value === '' || value === null || value === undefined){
-      return '<span class="pill pill-none">—</span>';
+      return '<span class="stamp stamp-none">—</span>';
     }
-    const cls = value === 'Yes' ? 'pill-fine' : 'pill-danger';
-    return '<span class="pill ' + cls + '">' + svgIcon('sparkles', 12) + escapeHtml(String(value)) + '</span>';
+    const cls = value === 'Yes' ? 'stamp-fine' : 'stamp-danger';
+    return '<span class="stamp ' + cls + '">' + svgIcon('sparkles', 12) + escapeHtml(String(value)) + '</span>';
   }
 
   function textCell(value){
     if(!value) return '<span class="text-cell" title="">—</span>';
-    return '<span class="text-cell" title="' + escapeHtml(String(value)) + '">' + escapeHtml(String(value)) + '</span>';
+    const str = String(value);
+    const isLong = str.length > 10;
+    const shown = isLong ? str.slice(0, 10) + '…' : str;
+    const cls = 'text-cell' + (isLong ? ' text-cell-trunc' : '');
+    return '<span class="' + cls + '" title="' + escapeHtml(str) + '">' + escapeHtml(shown) + '</span>';
   }
 
   /* ---------------- Build the entry form ---------------- */
@@ -861,14 +898,14 @@
     GROUP_ORDER.forEach(function(g){
       if(!groups[g]) return;
       const meta = GROUP_META[g];
-      html += '<p class="field-section-title">' + svgIcon(meta.icon, 14) + meta.label + '</p>';
+      html += '<p class="field-section-title"><span class="idx">No. ' + meta.idx + '</span>' + svgIcon(meta.icon, 14) + meta.label + '</p>';
       html += '<div class="row g-3 mb-2">';
       groups[g].forEach(function(m){ html += fieldHTML(m); });
       html += '</div>';
     });
     document.getElementById('metricFieldsRow').innerHTML = html;
 
-    let th = '<p class="field-section-title">' + svgIcon('notebook', 14) + 'Reflect' + '</p><div class="row g-3">';
+    let th = '<p class="field-section-title"><span class="idx">No. 05</span>' + svgIcon('notebook', 14) + 'Reflect' + '</p><div class="row g-3">';
     TEXT_FIELDS.forEach(function(f){ th += textFieldHTML(f); });
     th += '</div>';
     document.getElementById('textFieldsCol').innerHTML = th;
@@ -915,8 +952,8 @@
         title: svgIcon(m.icon, 13) + m.label,
         sortable: true,
         formatter: function(value){
-          if(m.formType === 'boolean') return booleanPill(value);
-          return metricPill(value, m);
+          if(m.formType === 'boolean') return booleanStamp(value);
+          return metricStamp(value, m);
         }
       });
     });
