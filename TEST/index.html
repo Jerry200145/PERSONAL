@@ -441,7 +441,56 @@
   @media (max-width: 520px){ .page{ padding-top: 1.4rem; } }
   @media (prefers-reduced-motion: reduce){ .btn-ink{ transition:none; } }
 
-  /* ============ Lock / login — soft bubble card ============ */
+  /* ============ Modal — yesterday's reminder & save-success popup ============ */
+  .modal-overlay{
+    position: fixed; inset: 0;
+    background: rgba(20, 34, 37, 0.5);
+    backdrop-filter: blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    padding: 1.25rem; z-index: 100;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .modal-overlay.open{ opacity: 1; pointer-events: auto; }
+  .modal-card{
+    position: relative;
+    max-width: 420px; width: 100%;
+    background: var(--card);
+    border-radius: var(--radius-lg);
+    padding: 2.1rem 1.9rem 1.9rem;
+    text-align: center;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.4);
+    transform: translateY(14px) scale(0.97);
+    transition: transform 0.2s ease;
+  }
+  .modal-overlay.open .modal-card{ transform: translateY(0) scale(1); }
+  .modal-close-btn{
+    position:absolute; top: 0.9rem; right: 0.9rem;
+    background: var(--card-soft); border: none; border-radius: 50%;
+    width: 30px; height: 30px;
+    display:flex; align-items:center; justify-content:center;
+    color: var(--ink-soft); cursor:pointer;
+  }
+  .modal-close-btn:hover{ background: var(--indigo-soft); color: var(--indigo-dark); }
+  .modal-icon-circle{
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--indigo));
+    display:flex; align-items:center; justify-content:center;
+    color: #fff; margin: 0 auto 1.1rem;
+    box-shadow: 0 10px 22px -8px var(--shadow);
+  }
+  .modal-icon-circle.pop{ background: linear-gradient(135deg, var(--pop), var(--indigo)); }
+  .modal-eyebrow{
+    font-family:'Space Mono'; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent-dark); margin-bottom: 0.45rem;
+  }
+  .modal-title{ font-family:'Fredoka', sans-serif; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-bottom: 0.6rem; }
+  .modal-message{ font-size: 0.88rem; color: var(--ink-soft); line-height: 1.55; margin-bottom: 1.1rem; }
+  .modal-tasks{ display:none; text-align:left; background: var(--card-soft); border-radius: var(--radius-md); padding: 0.9rem 1.1rem; margin-bottom: 1.3rem; }
+  .modal-tasks-label{ display:block; font-family:'Space Mono'; font-size: 0.64rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--indigo-dark); margin-bottom: 0.4rem; }
+  .modal-tasks-body{ font-size: 0.86rem; color: var(--ink); line-height: 1.65; white-space: normal; }
+
+
   .lock-screen{
     position: fixed; inset: 0;
     background:
@@ -641,6 +690,23 @@
 
 </div>
 
+<div class="modal-overlay" id="appModal">
+  <div class="modal-card">
+    <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
+    <div class="modal-icon-circle" id="modalIconHolder"></div>
+    <p class="modal-eyebrow" id="modalEyebrow"></p>
+    <h2 class="modal-title" id="modalTitle"></h2>
+    <p class="modal-message" id="modalMessage"></p>
+    <div class="modal-tasks" id="modalTasksWrap">
+      <span class="modal-tasks-label" id="modalTasksLabel"></span>
+      <div class="modal-tasks-body" id="modalTasksBody"></div>
+    </div>
+    <button type="button" class="btn-ink" id="modalBtn" style="width:100%;">Got it</button>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.10.0/js/bootstrap-datepicker.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.4/dist/bootstrap-table.min.js"></script>
@@ -739,6 +805,13 @@
     return d.toISOString().slice(0,10);
   }
 
+  function yesterdayISO(){
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    d.setDate(d.getDate() - 1);
+    return d.toISOString().slice(0,10);
+  }
+
   function formatDisplayDate(iso){
     const d = new Date(iso + 'T00:00:00');
     return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
@@ -809,6 +882,45 @@
     div.textContent = str;
     return div.innerHTML;
   }
+
+  /* ---------------- Reusable popup modal ---------------- */
+  const appModal = document.getElementById('appModal');
+  const modalIconHolder = document.getElementById('modalIconHolder');
+  const modalEyebrow = document.getElementById('modalEyebrow');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMessage = document.getElementById('modalMessage');
+  const modalTasksWrap = document.getElementById('modalTasksWrap');
+  const modalTasksLabel = document.getElementById('modalTasksLabel');
+  const modalTasksBody = document.getElementById('modalTasksBody');
+  const modalBtn = document.getElementById('modalBtn');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+  function openModal(opts){
+    modalIconHolder.className = 'modal-icon-circle' + (opts.pop ? ' pop' : '');
+    modalIconHolder.innerHTML = svgIcon(opts.icon || 'sparkles', 24);
+    modalEyebrow.textContent = opts.eyebrow || '';
+    modalTitle.textContent = opts.title || '';
+    modalMessage.textContent = opts.message || '';
+    modalMessage.style.display = opts.message ? '' : 'none';
+    if(opts.tasksText){
+      modalTasksLabel.textContent = opts.tasksLabel || 'Tasks';
+      modalTasksBody.innerHTML = escapeHtml(opts.tasksText).replace(/\n/g, '<br>');
+      modalTasksWrap.style.display = 'block';
+    } else {
+      modalTasksWrap.style.display = 'none';
+    }
+    modalBtn.textContent = opts.btnText || 'Got it';
+    appModal.classList.add('open');
+  }
+
+  function closeModal(){
+    appModal.classList.remove('open');
+  }
+
+  modalBtn.addEventListener('click', closeModal);
+  modalCloseBtn.addEventListener('click', closeModal);
+  appModal.addEventListener('click', (ev) => { if(ev.target === appModal) closeModal(); });
+  document.addEventListener('keydown', (ev) => { if(ev.key === 'Escape' && appModal.classList.contains('open')) closeModal(); });
 
   function statusFor(value, cfg){
     if(value === '' || value === null || value === undefined || !cfg) return null;
@@ -1027,8 +1139,21 @@
     try{
       await saveEntry(payload);
       setStatus('Saved to your sheet.', 'ok');
+      const tomorrowPlan = payload.thingsTomorrow && String(payload.thingsTomorrow).trim();
       clearFormFields();
       await refresh();
+      openModal({
+        icon: 'sparkles',
+        pop: true,
+        eyebrow: 'Nice work',
+        title: 'Today, done well 🎉',
+        message: tomorrowPlan
+          ? "Today's entry is saved. Tomorrow, you'll do even more than today — here's what you've already got lined up:"
+          : "Today's entry is saved. Today, you're done well — tomorrow, you'll do even more than today.",
+        tasksText: tomorrowPlan || '',
+        tasksLabel: "Tomorrow's plan",
+        btnText: 'Sounds good'
+      });
     }catch(err){
       console.error(err);
       setStatus('Save failed — check the console and your SCRIPT_URL.', 'err');
@@ -1222,6 +1347,21 @@
 
       renderLedger(data.entries || []);
       renderStreak(data.entries || []);
+
+      const yEntry = (data.entries || []).find(e => String(e.date || '').slice(0, 10) === yesterdayISO());
+      if(yEntry && yEntry.thingsTomorrow && String(yEntry.thingsTomorrow).trim()){
+        setTimeout(() => {
+          openModal({
+            icon: 'checklist',
+            eyebrow: 'From yesterday',
+            title: "Here's what you hoped for today",
+            message: 'Yesterday-you left this for today-you. Hope today goes exactly as planned.',
+            tasksText: String(yEntry.thingsTomorrow),
+            tasksLabel: "Today's plan",
+            btnText: "I'm on it"
+          });
+        }, 450);
+      }
     } catch (err) {
       console.error(err);
       TOKEN = null;
